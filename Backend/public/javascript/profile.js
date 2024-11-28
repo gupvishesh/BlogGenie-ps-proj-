@@ -1,9 +1,6 @@
 let darkMode = false;
-let profileData = {
-    username: 'John Doe',
-    email: 'johndoe@example.com',
-    profilePicture: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Screenshot%202024-10-25%20141616-6em4aqT79EaXRGiKwv8FHhB6TZX8JE.png'
-};
+
+// Remove hardcoded profileData
 
 function toggleDarkMode() {
     darkMode = !darkMode;
@@ -17,15 +14,7 @@ function updateDarkModeIcon() {
     icon.className = darkMode ? 'fas fa-sun' : 'fas fa-moon';
 }
 
-function loadProfileData() {
-    const storedProfileData = localStorage.getItem('profileData');
-    if (storedProfileData) {
-        profileData = JSON.parse(storedProfileData);
-        document.getElementById('username').textContent = profileData.username;
-        document.getElementById('email').textContent = profileData.email;
-        document.getElementById('profile-picture').src = profileData.profilePicture;
-    }
-}
+// Remove loadProfileData function as we don't need it anymore - data comes from EJS template
 
 function loadBlogPosts() {
     const blogGrid = document.getElementById('blog-grid');
@@ -103,5 +92,5 @@ document.getElementById('file-input').addEventListener('change', function(event)
 darkMode = localStorage.getItem('darkMode') === 'true';
 document.body.classList.toggle('dark-mode', darkMode);
 updateDarkModeIcon();
-loadProfileData();
+// Remove loadProfileData() call since data is rendered by EJS
 loadBlogPosts();
