@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blog Editor</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Roboto+Slab:wght@400;700&display=swap" rel="stylesheet">
+<style>
+    :root {
+        --bg-color: #ffffff;
+        --text-color: #000000;
+        --sidebar-bg: #f0f0f0;
+        --input-bg: #ffffff;
+        --grey-shade: #888888;
+    }
+    .dark-mode {
+        --bg-color: #1a1a1a;
+        --text-color: #ffffff;
+        --sidebar-bg: #2a2a2a;
+        --input-bg: #1a1a1a;
+        --grey-shade: #aaaaaa;
+    }
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+    body {
+        font-family: 'Poppins', sans-serif;
+        background-color: var(--bg-color);
+        color: var(--text-color);
+        display: flex;
+        height: 100vh;
+        overflow: hidden;
+        transition: background-color 0.3s, color 0.3s;
+    }
+    .sidebar {
+        width: 60px;
+        height: calc(100vh - 40px);
+        background-color: var(--sidebar-bg);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 20px 0;
+        box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+        margin: 20px 0 20px 20px;
+        border-radius: 10px;
+        position: relative;
+    }
+    .menu-item {
+        width: 40px;
+        height: 40px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 15px;
+        cursor: pointer;
+        position: relative;
+    }
+    .menu-item i {
+        font-size: 18px;
+        color: var(--text-color);
+    }
+    .tooltip {
+        position: absolute;
+        left: 50px;
+        background-color: var(--sidebar-bg);
+        color: var(--text-color);
+        padding: 5px 10px;
+        border-radius: 5px;
+        font-size: 12px;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s ease;
+        white-space: nowrap;
+    }
+    .menu-item:hover .tooltip {
+        opacity: 1;
+    }
+    .content {
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        padding: 20px;
+        position: relative;
+    }
+    .header {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 20px;
+        position: relative;
+    }
+    .header-center {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    .header-date {
+        font-size: 16px;
+        color: var(--grey-shade);
+        margin-bottom: 5px;
+    }
+    .header-line {
+        width: 100vw;
+        height: 1px;
+        background-color: var(--grey-shade);
+        position: absolute;
+        bottom: -10px;
+        left: 0;
+    }
+    .category-dropdown {
+        position: absolute;
+        right: 20px;
+        top: 0;
+        padding: 10px;
+        border: none;
+        border-radius: 5px;
+        font-size: 16px;
+        cursor: pointer;
+        background: linear-gradient(90deg, rgb(160, 24, 24), rgb(227, 112, 131), rgb(255, 51, 102));
+        color: white;
+        font-weight: bold;
+    }
+    .category-dropdown option {
+        background-color: var(--bg-color);
+        color: var(--text-color);
+    }
+    .image-container {
+        position: absolute;
+        right: 20px;
+        top: 50%;
+        transform: translateY(-50%);
+        max-width: 200px;
+        max-height: 200px;
+    }
+    #image-preview {
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain;
+    }
+    .delete-image-icon {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        background-color: rgba(255, 255, 255, 0.7);
+        border-radius: 50%;
+        padding: 5px;
+        cursor: pointer;
+        display: none;
+    }
+    #image-upload {
+        display: none;
+    }
+    .blog-input {
+        background-color: transparent;
+        border: none;
+        color: var(--text-color);
+        font-size: 24px;
+        margin-bottom: 20px;
+        outline: none;
+        padding: 10px;
+        width: calc(100% - 220px);
+        font-family: 'Roboto Slab', serif;
+    }
+    #blog-heading {
+        font-size: 36px;
+        font-weight: bold;
+    }
+    #blog-content {
+        flex-grow: 1;
+        resize: none;
+        font-size: 18px;
+        line-height: 1.6;
+    }
+    .dark-mode-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-top: auto;
+        margin-bottom: 20px;
+    }
+    .dark-mode-icon {
+        font-size: 18px;
+        margin-bottom: 5px;
+    }
+    .toggle-switch {
+        position: relative;
+        display: inline-block;
+        width: 30px;
+        height: 16px;
+    }
+    .toggle-switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+    .toggle-slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #ccc;
+        transition: .4s;
+        border-radius: 34px;
+    }
+    .toggle-slider:before {
+        position: absolute;
+        content: "";
+        height: 12px;
+        width: 12px;
+        left: 2px;
+        bottom: 2px;
+        background-color: white;
+        transition: .4s;
+        border-radius: 50%;
+    }
+    input:checked + .toggle-slider {
+        background-color: #2196F3;
+    }
+    input:checked + .toggle-slider:before {
+        transform: translateX(14px);
+    }
+    #publish-btn {
+        position: absolute;
+        bottom: 20px;
+        right: 20px;
+        padding: 10px 20px;
+        font-size: 16px;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+    #publish-btn.disabled {
+        background-color: #cccccc;
+        cursor: not-allowed;
+    }
+    .profile-box {
+        position: absolute;
+        top: 70px;
+        left: 90px;
+        width: 200px;
+        background-color: var(--sidebar-bg);
+        border-radius: 10px;
+        padding: 20px;
+        display: none;
+        flex-direction: column;
+        align-items: center;
+        z-index: 1000;
+        cursor: pointer;
+    }
+    .profile-picture {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        object-fit: cover;
+        margin-bottom: 10px;
+    }
+    .profile-info {
+        text-align: center;
+    }
+    .profile-info p {
+        margin: 5px 0;
+        color: #888;
+        font-size: 14px;
+    }
+    .published-blogs-btn {
+        background: linear-gradient(45deg, #ff0000, #ff6666);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        cursor: pointer;
+        position: relative;
+    }
+    .published-blogs-btn .tooltip {
+        visibility: hidden;
+        width: 120px;
+        background-color: #555;
+        color: #fff;
+        text-align: center;
+        border-radius: 6px;
+        padding: 5px 0;
+        position: absolute;
+        z-index: 1;
+        bottom: 125%;
+        left: 50%;
+        margin-left: -60px;
+        opacity: 0;
+        transition: opacity 0.3s;
+    }
+    .published-blogs-btn:hover .tooltip {
+        visibility: visible;
+        opacity: 1;
+    }
+</style>
+</head>
+<body>
+<nav class="sidebar">
+    <div class="menu-item" id="profile-btn" data-purpose="View profile">
+        <i class="fas fa-user"></i>
+        <div class="tooltip">Profile</div>
+    </div>
+    <div class="menu-item" id="my-blogs-btn" data-purpose="View my blogs">
+        <i class="fas fa-book"></i>
+        <div class="tooltip">My Blogs</div>
+    </div>
+    <div class="menu-item" id="update-btn" data-purpose="Update blog">
+        <i class="fas fa-sync-alt"></i>
+        <div class="tooltip">Update</div>
+    </div>
+    <div class="menu-item" id="save-btn" data-purpose="Save blog">
+        <i class="fas fa-save"></i>
+        <div class="tooltip">Save</div>
+    </div>
+    <div class="menu-item" id="image-btn" data-purpose="Insert image">
+        <i class="fas fa-image"></i>
+        <div class="tooltip">Image</div>
+    </div>
+    <div class="menu-item" id="home-btn" data-purpose="Go to Home">
+        <i class="fas fa-home"></i>
+        <div class="tooltip">Home</div>
+    </div>
+    <div class="menu-item" id="chatbot-btn" data-purpose="Open AI Chatbot">
+        <i class="fas fa-robot"></i>
+        <div class="tooltip">Chatbot</div>
+    </div>
+    <div class="menu-item published-blogs-btn" id="published-blogs-btn" data-purpose="View published blogs">
+        <i class="fas fa-globe"></i>
+        <span class="tooltip">Published Blogs</span>
+    </div>
+    <div class="dark-mode-container">
+        <i class="fas fa-moon dark-mode-icon"></i>
+        <label class="toggle-switch">
+            <input type="checkbox" id="dark-mode-toggle">
+            <span class="toggle-slider"></span>
+        </label>
+    </div>
+</nav>
+
+<main class="content">
+    <header class="header">
+        <div class="header-center">
+            <div class="header-date" id="current-date-time"></div>
+        </div>
+        <select id="category-dropdown" class="category-dropdown">
+            <option value="">Select Category</option>
+            <option value="food">Food</option>
+            <option value="business">Business</option>
+            <option value="personal">Personal</option>
+            <option value="health">Health</option>
+            <option value="travel">Travel</option>
+            <option value="career">Career</option>
+        </select>
+        <div class="header-line"></div>
+    </header>
+    <input type="text" id="blog-heading" class="blog-input" placeholder="Heading">
+    <textarea id="blog-content" class="blog-input" placeholder="Start writing your blog..."></textarea>
+    <div class="image-container">
+        <img id="image-preview" src="#" alt="Preview" style="display: none;">
+        <i class="fas fa-times delete-image-icon" id="delete-image-icon"></i>
+    </div>
+    <input type="file" id="image-upload" accept="image/*">
+    <button id="publish-btn">Publish</button>
+</main>
+
+<div class="profile-box" id="profile-box">
+    <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Screenshot%202024-10-25%20141616-KngqCB5CgBGQIbUN3nj8joYdWEMT36.png" alt="Profile Picture" class="profile-picture" id="profile-picture">
+    <div class="profile-info">
+        <p id="profile-username">Username</p>
+        <p id="profile-email">user@example.com</p>
+    </div>
+</div>
+
+<script>
+    let publishedDate = null;
+    let profileData = {
+        username: "JohnDoe",
+        email: "johndoe@example.com",
+        profilePicture: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Screenshot%202024-10-25%20141616-KngqCB5CgBGQIbUN3nj8joYdWEMT36.png"
+    };
+    let currentEditPost = null;
+
+    function updateDateTime() {
+        const now = new Date();
+        const dateTimeString = now.toLocaleString('en-GB', { 
+            day: '2-digit', 
+            month: '2-digit', 
+            year: 'numeric', 
+            hour: '2-digit', 
+            minute: '2-digit', 
+            hour12: false 
+        }).replace(',', '');
+        const category = document.getElementById('category-dropdown').value;
+        document.getElementById('current-date-time').textContent = `${dateTimeString} ${category ? '| ' + category : ''}`;
+    }
+
+    function loadProfileData() {
+        const storedProfileData = localStorage.getItem('profileData');
+        if (storedProfileData) {
+            profileData = JSON.parse(storedProfileData);
+            document.getElementById('profile-username').textContent = profileData.username;
+            document.getElementById('profile-email').textContent = profileData.email;
+            document.getElementById('profile-picture').src  = profileData.profilePicture;
+        }
+    }
+
+    function loadCurrentEditPost() {
+        const storedPost = localStorage.getItem('currentEditPost');
+        if (storedPost) {
+            currentEditPost = JSON.parse(storedPost);
+            document.getElementById('blog-heading').value = currentEditPost.heading;
+            document.getElementById('blog-content').value = currentEditPost.content;
+            document.getElementById('category-dropdown').value = currentEditPost.category || '';
+            if (currentEditPost.image) {
+                document.getElementById('image-preview').src = currentEditPost.image;
+                document.getElementById('image-preview').style.display = 'block';
+            }
+            publishedDate = currentEditPost.date;
+            updateDateTime();
+        }
+    }
+
+    document.getElementById('blog-heading').addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            document.getElementById('blog-content').focus();
+        }
+    });
+
+    document.getElementById('profile-btn').addEventListener('click', function() {
+        const profileBox = document.getElementById('profile-box');
+        profileBox.style.display = profileBox.style.display === 'none' ? 'flex' : 'none';
+    });
+
+    document.getElementById('my-blogs-btn').addEventListener('click', function() {
+        window.location.href = 'profile.html';
+    });
+
+    document.getElementById('update-btn').addEventListener('click', function() {
+        const blogContent = document.getElementById('blog-content');
+        blogContent.focus();
+        blogContent.setSelectionRange(blogContent.value.length, blogContent.value.length);
+        document.getElementById('delete-image-icon').style.display = 'block';
+        publishedDate = null;
+        updateDateTime();
+    });
+
+    document.getElementById('save-btn').addEventListener('click', function() {
+        const blogData = {
+            id: currentEditPost ? currentEditPost.id : Date.now(),
+            heading: document.getElementById('blog-heading').value,
+            content: document.getElementById('blog-content').value,
+            image: document.getElementById('image-preview').src,
+            date: document.getElementById('current-date-time').textContent,
+            category: document.getElementById('category-dropdown').value,
+            author: profileData.username
+        };
+        let blogPosts = JSON.parse(localStorage.getItem('blogPosts')) || [];
+        if (currentEditPost) {
+            const index = blogPosts.findIndex(post => post.id === currentEditPost.id);
+            if (index !== -1) {
+                blogPosts[index] = blogData;
+            } else {
+                blogPosts.push(blogData);
+            }
+        } else {
+            blogPosts.push(blogData);
+        }
+        localStorage.setItem('blogPosts', JSON.stringify(blogPosts));
+        console.log('Blog saved:', blogData);
+        alert('Blog post saved successfully!');
+    });
+
+    document.getElementById('image-btn').addEventListener('click', function() {
+        document.getElementById('image-upload').click();
+    });
+
+    document.getElementById('home-btn').addEventListener('click', function() {
+        window.location.href = 'index.html';
+    });
+
+    document.getElementById('chatbot-btn').addEventListener('click', function() {
+        window.location.href = 'chatbot.html'; // Replace with your actual chatbot page URL
+    });
+
+    document.getElementById('published-blogs-btn').addEventListener('click', function() {
+        window.location.href = 'published.html';
+    });
+
+    const darkModeToggle = document.getElementById('dark-mode-toggle');
+    darkModeToggle.addEventListener('change', function() {
+        document.body.classList.toggle('dark-mode', this.checked);
+        localStorage.setItem('darkMode', this.checked);
+    });
+
+    document.getElementById('publish-btn').addEventListener('click', function() {
+        publishedDate = document.getElementById('current-date-time').textContent;
+        const blogData = {
+            id: currentEditPost ? currentEditPost.id : Date.now(),
+            heading: document.getElementById('blog-heading').value,
+            content: document.getElementById('blog-content').value,
+            image: document.getElementById('image-preview').src,
+            date: publishedDate,
+            category: document.getElementById('category-dropdown').value,
+            author: profileData.username
+        };
+        let blogPosts = JSON.parse(localStorage.getItem('blogPosts')) || [];
+        if (currentEditPost) {
+            const index = blogPosts.findIndex(post => post.id === currentEditPost.id);
+            if (index !== -1) {
+                blogPosts[index] = blogData;
+            } else {
+                blogPosts.push(blogData);
+            }
+        } else {
+            blogPosts.push(blogData);
+        }
+        localStorage.setItem('blogPosts', JSON.stringify(blogPosts));
+        console.log('Blog published:', blogData);
+        alert('Blog post published successfully!');
+        window.location.href = 'published-blogs.html';
+    });
+
+    const imageUpload = document.getElementById('image-upload');
+    const imagePreview = document.getElementById('image-preview');
+    const deleteImageIcon = document.getElementById('delete-image-icon');
+
+    imageUpload.addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                imagePreview.src = e.target.result;
+                imagePreview.style.display = 'block';
+                deleteImageIcon.style.display = 'block';
+            }
+            reader.readAsDataURL(file);
+        }
+    });
+
+    deleteImageIcon.addEventListener('click', function() {
+        imagePreview.src = '#';
+        imagePreview.style.display = 'none';
+        imageUpload.value = ''; // Clear the file input
+        this.style.display = 'none';
+    });
+
+    document.getElementById('profile-box').addEventListener('click', function() {
+        window.location.href = 'profile.html';
+    });
+
+    document.addEventListener('click', function(e) {
+        const profileBox = document.getElementById('profile-box');
+        const profileBtn = document.getElementById('profile-btn');
+        if (!profileBox.contains(e.target) && !profileBtn.contains(e.target)) {
+            profileBox.style.display = 'none';
+        }
+    });
+
+    document.getElementById('category-dropdown').addEventListener('change', updateDateTime);
+
+    // Initialize
+    updateDateTime();
+    setInterval(updateDateTime, 60000);
+    loadProfileData();
+    loadCurrentEditPost();
+    const isDarkMode = localStorage.getItem('darkMode') === 'true';
+    darkModeToggle.checked = isDarkMode;
+    document.body.classList.toggle('dark-mode', isDarkMode);
+</script>
+</body>
+</html>

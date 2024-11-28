@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Text Generator</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <link
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+  rel="stylesheet"
+/>
+
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.1/marked.min.js"></script>
+    <link rel="stylesheet" href="chatbot.css">
+</head>
+<body>
+    <div id="Loader"></div>
+    <div class="chat-container">
+      <button id="home-btn" class="icon-btn" title="Home">
+      <a href="index.html" id="home-btn" class="icon-btn" title="Home">
+        <i class="fas fa-home"></i>
+      </a>
+      </button>
+      <div id="output-field" class="text-center">
+            <h2>How can I help you today?</h2>
+        </div>
+        <div id="output-container"></div>
+        <div class="input-group mb-0">
+            <input
+                type="text"
+                id="prompt-input"
+                class="form-control"
+                placeholder="Type your prompt here..."
+                aria-label="Message input"
+            />
+            <button id="generate-btn" class="btn btn-primary">Send</button>
+        </div>
+    </div>
+
+    <!-- <div class="container">
+      <div class="sidebar">
+        <h2>Search History</h2>
+        <ul id="history-list"></ul>
+      </div>
+      <div class="main">
+        <div class="chatbox">
+          <div id="chat-area">
+            Chat messages will be added here
+          </div>
+          <div class="input-area">
+            <input type="text" id="user-input" placeholder="Type your prompt here...">
+            <button id="send-button">Send</button>
+          </div>
+        </div>
+      </div>
+    </div> -->
+
+    <!-- <div class="container"> -->
+      
+      <!-- </div> -->
+      <!-- <div class="main-panel">
+          <h1>Your Website</h1>
+          Add your website content here
+      </div> -->
+<!-- Below code is req for a search history tab -->
+      <!-- <div class="history-panel">
+        <h3>Search History</h3>
+        <div id="history-list">
+            </div> -->
+  </div>
+
+  
+
+    <script type="importmap">
+      {
+        "imports": {
+          "@google/generative-ai": "https://esm.run/@google/generative-ai"
+        }
+      }
+    </script>
+
+    <script type="module">
+      import {
+        GoogleGenerativeAI,
+        HarmBlockThreshold,
+        HarmCategory,
+      } from "@google/generative-ai";
+
+      const API_KEY = "AIzaSyBF265bY6o63VuPypal-5w0-b7sr0N_O3A"; // Replace with your gemini-api actual API key 
+      const genAI = new GoogleGenerativeAI(API_KEY);
+      let chat;
+
+      const safetySettings = [
+        {
+          category: HarmCategory.HARM_CATEGORY_HARASSMENT,
+          threshold: HarmBlockThreshold.BLOCK_ONLY_HIGH,
+        },
+      ];
+
+      async function sendMessage(prompt) {
+        let model;
+        clearGreeting(); // Clear the greeting after sending the message
+
+        if (!chat) {
+            chat = await genAI
+              .getGenerativeModel({ model: "gemini-pro", safetySettings })
+              .startChat({
+                history: [],
+                generationConfig: {
+                  maxOutputTokens: 4000, // maxOutputTokens Limit around 4096
+                },
+              });
+        }
+        model = chat;
+        clearInputs(); //clear the input field imidiately 
+
+        try {
+          const result = await model.sendMessage(prompt);
+          const response = await result.response;
+          if (response) {
+            const text = await response.text();
+            displayMessage(text, "ai");
+          } else {
+            displayMessage("This content is not safe for display based on current settings.", "ai");
+          }
+        } catch (error) {
+          console.error("Error during message generation:", error);
+          displayMessage("This content is not safe for display based on current settings or an internal error.", "ai");
+        }
+        // clearInputs();
+      }
+
+      function displayMessage(message, sender) {
+        const outputContainer = document.getElementById("output-container");
+        const msgDiv = document.createElement("div");
+        msgDiv.classList.add(sender === "user" ? "user-message" : "ai-message");
+
+        if (sender === "ai") {
+          // Show loading animation for AI messages
+          msgDiv.innerHTML =
+            '<div class="loading">' +
+            '<div class="loading-dot"></div>' +
+            '<div class="loading-dot"></div>' +
+            '<div class="loading-dot"></div>' +
+            "</div>";
+          outputContainer.appendChild(msgDiv);
+
+          // Simulate processing delay
+          setTimeout(() => {
+            // Clear loading animation
+            msgDiv.innerHTML = marked.parse(message);
+            outputContainer.scrollTop = outputContainer.scrollHeight; // Scroll to bottom
+          }, 1500);
+        } else {
+          msgDiv.innerHTML = marked.parse(message);
+          outputContainer.appendChild(msgDiv);
+        }
+
+        // Ensure the latest message is visible
+        outputContainer.scrollTop = outputContainer.scrollHeight;
+      }
+
+      function clearInputs() {
+        document.getElementById("prompt-input").value = "";
+      }
+
+      document.getElementById("generate-btn").addEventListener("click", async () => {
+        const prompt = document.getElementById("prompt-input").value;
+        if (prompt.trim() !== "") {
+          displayMessage(prompt, "user");
+          await sendMessage(prompt);
+        }
+      });
+
+// Function to send msg by pressing Enter button 
+
+document.getElementById("prompt-input").addEventListener("keypress", function(event) {
+  if (event.key === "Enter") {
+    event.preventDefault(); // Prevent the default form submission
+    const prompt = this.value;
+    if (prompt.trim() !== "") {
+      displayMessage(prompt, "user");
+      sendMessage(prompt);
+    }
+  }
+});
+      
+      function clearGreeting() {
+        const outputField = document.getElementById("output-field");
+        if (outputField) {
+          outputField.style.display = "none"; // Hide the field completely
+        }
+      }
+    </script>
+    <script>
+      var loader = document.getElementById("Loader");
+      window.addEventListener("load", function () {
+        loader.style.display = "none";
+      });
+    </script>
+    
+
+
+    <script>
+    const historyList = document.getElementById('history-list');
+      let searchHistory = [];
+
+      // Load search history from local storage (if available)
+      if (localStorage.getItem('searchHistory')) {
+          searchHistory = JSON.parse(localStorage.getItem('searchHistory'));
+          displayHistory();
+      }
+
+      // Function to add a search query to history
+      function addSearch(query) {
+          searchHistory.push(query);
+          localStorage.setItem('searchHistory', JSON.stringify(searchHistory));
+          displayHistory();
+      }
+
+      // Function to display search history in the panel
+      function displayHistory() {
+          historyList.innerHTML = '';
+          searchHistory.forEach((query, index) => {
+              const listItem = document.createElement('li');
+              listItem.textContent = query;
+              listItem.addEventListener('click', () => {
+                  // Handle click event (e.g., fill the search input with the selected query)
+                  document.getElementById('search-input').value = query;
+              });
+              historyList.appendChild(listItem);
+          });
+      }
+          </script>
+</body>
+</html>

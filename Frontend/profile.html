@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blog Profile</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Roboto+Slab:wght@400;700&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+<style>
+:root {
+    --bg-color: #ffffff;
+    --text-color: #000000;
+    --sidebar-bg: #f0f0f0;
+    --card-bg: #f9f9f9;
+}
+.dark-mode {
+    --bg-color: #1a1a1a;
+    --text-color: #ffffff;
+    --sidebar-bg: #2a2a2a;
+    --card-bg: #2a2a2a;
+}
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    display: flex;
+    min-height: 100vh;
+    transition: background-color 0.3s, color 0.3s;
+}
+.sidebar {
+    width: 60px;
+    background-color: var(--sidebar-bg);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px 0;
+    position: fixed;
+    height: 100vh;
+}
+.menu-item {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 15px;
+    cursor: pointer;
+    color: var(--text-color);
+    position: relative;
+}
+.menu-item .tooltip {
+    visibility: hidden;
+    width: 120px;
+    background-color: #555;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+    position: absolute;
+    z-index: 1;
+    bottom: 100%;
+    left: 30%;
+    margin-left: -60px;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+.menu-item:hover .tooltip {
+    visibility: visible;
+    opacity: 1;
+}
+.menu-item:hover .tooltip {
+    left: calc(100% + 10px); /* Position it to the right of the menu item */
+    max-width: 200px; /* Set a maximum width */
+}
+.content {
+    margin-left: 60px;
+    padding: 20px;
+    width: calc(100% - 60px);
+}
+.profile {
+    display: flex;
+    align-items: center;
+    margin-bottom: 30px;
+}
+.profile-picture-container {
+    position: relative;
+    width: 100px;
+    height: 100px;
+    margin-right: 20px;
+}
+.profile-picture {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    cursor: pointer;
+}
+.profile-picture-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+.profile-picture-container:hover .profile-picture-overlay {
+    opacity: 1;
+}
+.profile-picture-overlay i {
+    color: white;
+    font-size: 24px;
+}
+.profile-info {
+    flex-grow: 1;
+}
+.profile-info h2 {
+    margin-bottom: 5px;
+}
+.blog-title {
+    font-family: 'Dancing Script', cursive;
+    font-size: 48px;
+    font-weight: bold;
+    text-align: center;
+    background: linear-gradient(45deg, #ff00ff, #00ff00, #ff0000, #0000ff, #ffff00);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    margin-bottom: 30px;
+}
+.blog-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+}
+.blog-card {
+    background-color: var(--card-bg);
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    position: relative;
+    height: 400px;
+    display: flex;
+    flex-direction: column;
+    background-size: cover;
+    background-position: center;
+    color: white;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8);
+}
+.blog-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 10px;
+}
+.blog-card > * {
+    position: relative;
+    z-index: 1;
+}
+.blog-card h3 {
+    margin-bottom: 10px;
+}
+.blog-card p {
+    flex-grow: 1;
+    overflow: hidden;
+}
+.blog-card .delete-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: #ff4444;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    font-size: 16px;
+    cursor: pointer;
+    display: none;
+}
+.blog-card:hover .delete-btn {
+    display: block;
+}
+#dark-mode-toggle {
+    margin-top: auto;
+}
+.published-blogs-btn {
+    background: linear-gradient(45deg, #ff0000, #ff6666);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+#file-input {
+    display: none;
+}
+</style>
+</head>
+<body>
+<nav class="sidebar">
+<div class="menu-item" id="home-btn">
+    <i class="fas fa-home"></i>
+    <span class="tooltip">Home</span>
+</div>
+<div class="menu-item" id="new-blog-btn">
+    <i class="fas fa-pen-to-square"></i>
+    <span class="tooltip">New Blog</span>
+</div>
+<div class="menu-item" id="published-blogs-btn">
+    <i class="fas fa-globe published-blogs-btn"></i>
+    <span class="tooltip">Published Blogs</span>
+</div>
+<div class="menu-item" id="dark-mode-toggle">
+    <i class="fas fa-moon"></i>
+    <span class="tooltip">Dark Mode</span>
+</div>
+</nav>
+
+<main class="content">
+<div class="profile">
+    <div class="profile-picture-container">
+        <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Screenshot%202024-10-25%20141616-6em4aqT79EaXRGiKwv8FHhB6TZX8JE.png" alt="Profile Picture" class="profile-picture" id="profile-picture">
+        <div class="profile-picture-overlay">
+            <i class="fas fa-camera"></i>
+        </div>
+    </div>
+    <div class="profile-info">
+        <h2 id="username">Username</h2>
+        <p id="email">user@example.com</p>
+    </div>
+</div>
+
+<h1 class="blog-title">My Blogs</h1>
+
+<div class="blog-grid" id="blog-grid">
+    <!-- Blog posts will be dynamically inserted here -->
+</div>
+</main>
+
+<input type="file" id="file-input" accept="image/*">
+
+<script>
+let darkMode = false;
+let profileData = {
+    username: 'John Doe',
+    email: 'johndoe@example.com',
+    profilePicture: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Screenshot%202024-10-25%20141616-6em4aqT79EaXRGiKwv8FHhB6TZX8JE.png'
+};
+
+function toggleDarkMode() {
+    darkMode = !darkMode;
+    document.body.classList.toggle('dark-mode', darkMode);
+    localStorage.setItem('darkMode', darkMode);
+    updateDarkModeIcon();
+}
+
+function updateDarkModeIcon() {
+    const icon = document.querySelector('#dark-mode-toggle i');
+    icon.className = darkMode ? 'fas fa-sun' : 'fas fa-moon';
+}
+
+function loadProfileData() {
+    const storedProfileData = localStorage.getItem('profileData');
+    if (storedProfileData) {
+        profileData = JSON.parse(storedProfileData);
+        document.getElementById('username').textContent = profileData.username;
+        document.getElementById('email').textContent = profileData.email;
+        document.getElementById('profile-picture').src = profileData.profilePicture;
+    }
+}
+
+function loadBlogPosts() {
+    const blogGrid = document.getElementById('blog-grid');
+    blogGrid.innerHTML = '';
+    
+    const storedPosts = localStorage.getItem('blogPosts');
+    if (storedPosts) {
+        const blogPosts = JSON.parse(storedPosts);
+        blogPosts.forEach(post => {
+            const postElement = document.createElement('div');
+            postElement.className = 'blog-card';
+            postElement.style.backgroundImage = `url('${post.image}')`;
+            postElement.innerHTML = `
+                <h3>${post.heading}</h3>
+                <p>${post.content.substring(0, 100)}...</p>
+                <small>${post.date}</small>
+                <button class="delete-btn" data-id="${post.id}">&times;</button>
+            `;
+            blogGrid.appendChild(postElement);
+        });
+    }
+}
+
+document.getElementById('home-btn').addEventListener('click', function() {
+    window.location.href = 'index.html';
+});
+
+document.getElementById('new-blog-btn').addEventListener('click', function() {
+    localStorage.removeItem('currentEditPost');
+    window.location.href = 'blog-editor.html';
+});
+
+document.getElementById('published-blogs-btn').addEventListener('click', function() {
+    window.location.href = 'published.html';
+});
+
+document.getElementById('dark-mode-toggle').addEventListener('click', toggleDarkMode);
+
+document.getElementById('blog-grid').addEventListener('click', function(e) {
+    if (e.target.classList.contains('delete-btn')) {
+        const postId = parseInt(e.target.getAttribute('data-id'));
+        let blogPosts = JSON.parse(localStorage.getItem('blogPosts')) || [];
+        blogPosts = blogPosts.filter(post => post.id !== postId);
+        localStorage.setItem('blogPosts', JSON.stringify(blogPosts));
+        loadBlogPosts();
+    } else if (e.target.closest('.blog-card')) {
+        const postId = parseInt(e.target.closest('.blog-card').querySelector('.delete-btn').getAttribute('data-id'));
+        let blogPosts = JSON.parse(localStorage.getItem('blogPosts')) || [];
+        const selectedPost = blogPosts.find(post => post.id === postId);
+        if (selectedPost) {
+            localStorage.setItem('currentEditPost', JSON.stringify(selectedPost));
+            window.location.href = 'blog-editor.html';
+        }
+    }
+});
+
+document.querySelector('.profile-picture-container').addEventListener('click', function() {
+    document.getElementById('file-input').click();
+});
+
+document.getElementById('file-input').addEventListener('change', function(event) {
+    const file = event.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            document.getElementById('profile-picture').src = e.target.result;
+            profileData.profilePicture = e.target.result;
+            localStorage.setItem('profileData', JSON.stringify(profileData));
+        };
+        reader.readAsDataURL(file);
+    }
+});
+
+// Initialize
+darkMode = localStorage.getItem('darkMode') === 'true';
+document.body.classList.toggle('dark-mode', darkMode);
+updateDarkModeIcon();
+loadProfileData();
+loadBlogPosts();
+</script>
+</body>
+</html>

@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Signup</title>
+    <link rel="stylesheet" href="/css/login.css">
+</head>
+<body>
+    <div class="container">
+        <h2>Sign Up</h2>
+        <form id="signupForm" action="/blogGenie/signup" method="post">
+            <input type="text" name="userName" class="name" placeholder="Name" required>
+            <input type="email" name="email" class="email" placeholder="Email" required>
+            <input type="password" name="password" class="password" placeholder="Password" required>
+            <button type="submit" class="submit-btn">Signup</button>
+        </form>
+        <p>Already have an account? <a href="/blogGenie/login">Login</a></p>
+    </div>
+    <script src="/Backend/public/javascript/signup.js"></script>
+</body>
+</html>

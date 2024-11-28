@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blog Profile</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Roboto+Slab:wght@400;700&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/profile.css">
+</head>
+<body>
+<nav class="sidebar">
+<div class="menu-item" id="home-btn">
+    <i class="fas fa-home"></i>
+    <span class="tooltip">Home</span>
+</div>
+<div class="menu-item" id="new-blog-btn">
+    <i class="fas fa-pen-to-square"></i>
+    <span class="tooltip">New Blog</span>
+</div>
+<div class="menu-item" id="published-blogs-btn">
+    <i class="fas fa-globe published-blogs-btn"></i>
+    <span class="tooltip">View Blogs</span>
+</div>
+<div class="menu-item" id="dark-mode-toggle">
+    <i class="fas fa-moon"></i>
+    <span class="tooltip">Dark Mode</span>
+</div>
+</nav>
+
+<main class="content">
+<div class="profile">
+    <div class="profile-picture-container">
+        <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Screenshot%202024-10-25%20141616-6em4aqT79EaXRGiKwv8FHhB6TZX8JE.png" alt="Profile Picture" class="profile-picture" id="profile-picture">
+        <div class="profile-picture-overlay">
+            <i class="fas fa-camera"></i>
+        </div>
+    </div>
+    <div class="profile-info">
+        <h2 id="username"><%=  user.username %></h2>
+        <p id="email"><%=  user.email %></p>
+    </div>
+</div>
+
+<h1 class="blog-title">My Blogs</h1>
+
+<div class="blog-grid" id="blog-grid">
+    <!-- Blog posts will be dynamically inserted here -->
+</div>
+</main>
+
+<input type="file" id="file-input" accept="image/*">
+<script src="/javascript/profile.js"></script>
+</body>
+</html>

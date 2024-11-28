@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BlogGenie</title>
+    <link rel="stylesheet" href="/css/index.css"> <!-- Link to your CSS file -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+    <div>
+        <header>
+            <a href="#" class="logo">Logo</a>
+            <ul>
+                <li class="nav-item"><a href="#">Home</a></li>
+                <li class="login-box"><a href="/blogGenie/login">Log in</a></li>
+                <li class="nav-item" id="AboutBtn"><a href="#">About</a></li>
+                <li class="nav-item"><a href="#">Contact</a></li>
+            </ul>
+            <div class="off-screen-menu">
+                <nav class="sidebar">
+                    <ul>
+                        <li class="menu-item" id="profile-btn">
+                            <a href="/blogGenie/profile"><i class="fas fa-user"></i> Profile</a>
+                        </li>
+                        <li class="menu-item" id="blog-editor-btn">
+                            <a href="/blogGenie/new"><i class="fas fa-edit"></i> Blog Editor</a> <!-- 'fa-edit' for editing/blog creation -->
+                        </li>
+                        <li class="menu-item" id="published-blogs-btn">
+                            <a href="/blogGenie/view"><i class="fas fa-book-open"></i> View Blogs</a> <!-- 'fa-book-open' for viewing content -->
+                        </li>
+                        <li class="menu-item" id="chatbot-btn">
+                            <a href="/blogGenie/chatbot"><i class="fas fa-robot"></i> Chatbot</a> <!-- 'fa-robot' for chatbot -->
+                        </li>
+                        <li class="menu-item" id="about-btn">
+                            <a href="#about"><i class="fas fa-info-circle"></i> About</a> <!-- 'fa-info-circle' for "About" info -->
+                        </li>
+                        <li class="menu-item" id="contact-btn">
+                            <a href="#contact"><i class="fas fa-envelope"></i> Contact</a> <!-- 'fa-envelope' for contacting -->
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+                        
+          
+            <nav>
+                <div class="ham-menu">
+                  <span></span>
+                  <span></span>
+                  <span></span>
+                </div>
+            </nav>
+        </header>
+        <div class="parent">
+            <div class="child"></div>
+            <div class="text t1">Blog Genie
+            </div><!-- Text added here -->
+        </div>
+    
+        <div class="container" id="container">
+            <ul id="cards">
+                <li class="card" id="card1">
+                    <div class="card-body">
+                        <div class="inspire">
+                            <img src="/images/Your vision (1).png">
+                        </div>
+                    </div>
+                </li>
+                <li class="card" id="card2">
+                    <div class="card-body">
+                        <div class="highlights">
+                            <img src="/images/Highlites (1).png">
+                        </div>
+
+                    </div>
+                </li>
+                <li class="card" id="card3">
+                    <div class="card-body">
+                        <div class="guideline">
+                            <img src="/images/Highlites (4).png">
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <script src="/javascript/index.js"></script>
+</body>
+</html>

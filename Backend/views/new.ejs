@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blog Editor</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Roboto+Slab:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/new.css">
+</head>
+<body>
+<nav class="sidebar">
+    <div class="menu-item" id="profile-btn" data-purpose="View profile">
+        <i class="fas fa-user"></i>
+        <div class="tooltip">Profile</div>
+    </div>
+    <div class="menu-item" id="my-blogs-btn" data-purpose="View my blogs">
+        <i class="fas fa-book"></i>
+        <div class="tooltip">My Blogs</div>
+    </div>
+    <div class="menu-item" id="update-btn" data-purpose="Update blog">
+        <i class="fas fa-sync-alt"></i>
+        <div class="tooltip">Update</div>
+    </div>
+    <div class="menu-item" id="save-btn" data-purpose="Save blog">
+        <i class="fas fa-save"></i>
+        <div class="tooltip">Save</div>
+    </div>
+    <div class="menu-item" id="image-btn" data-purpose="Insert image">
+        <i class="fas fa-image"></i>
+        <div class="tooltip">Image</div>
+    </div>
+    <div class="menu-item" id="home-btn" data-purpose="Go to Home">
+        <i class="fas fa-home"></i>
+        <div class="tooltip">Home</div>
+    </div>
+    <div class="menu-item" id="chatbot-btn" data-purpose="Open AI Chatbot">
+        <i class="fas fa-robot"></i>
+        <div class="tooltip">Chatbot</div>
+    </div>
+    <div class="menu-item published-blogs-btn" id="published-blogs-btn" data-purpose="View published blogs">
+        <i class="fas fa-globe"></i>
+        <span class="tooltip">Published Blogs</span>
+    </div>
+    <div class="dark-mode-container">
+        <i class="fas fa-moon dark-mode-icon"></i>
+        <label class="toggle-switch">
+            <input type="checkbox" id="dark-mode-toggle">
+            <span class="toggle-slider"></span>
+        </label>
+    </div>
+</nav>
+
+<main class="content">
+    <header class="header">
+        <div class="header-center">
+            <div class="header-date" id="current-date-time"></div>
+        </div>
+        <select id="category-dropdown" class="category-dropdown">
+            <option value="">Select Category</option>
+            <option value="food">Food</option>
+            <option value="business">Business</option>
+            <option value="personal">Personal</option>
+            <option value="health">Health</option>
+            <option value="travel">Travel</option>
+            <option value="career">Career</option>
+        </select>
+        <div class="header-line"></div>
+    </header>
+    <input type="text" id="blog-heading" class="blog-input" placeholder="Heading">
+    <textarea id="blog-content" class="blog-input" placeholder="Start writing your blog..."></textarea>
+    <div class="image-container">
+        <img id="image-preview" src="#" alt="Preview" style="display: none;">
+        <i class="fas fa-times delete-image-icon" id="delete-image-icon"></i>
+    </div>
+    <input type="file" id="image-upload" accept="image/*">
+    <button id="publish-btn">Publish</button>
+</main>
+
+<div class="profile-box" id="profile-box">
+    <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Screenshot%202024-10-25%20141616-KngqCB5CgBGQIbUN3nj8joYdWEMT36.png" alt="Profile Picture" class="profile-picture" id="profile-picture">
+    <div class="profile-info">
+        <p id="profile-username">Username</p>
+        <p id="profile-email">user@example.com</p>
+    </div>
+</div>
+
+<script src="/javascript/new.js"></script>
+</body>
+</html>

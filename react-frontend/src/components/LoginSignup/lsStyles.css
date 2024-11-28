@@ -1,0 +1,92 @@
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f4;
+  margin: 0;
+  padding: 0;
+  background: linear-gradient(to right, #8E2447, #3F1C61, #07062C);
+  background-size: cover;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  max-width: 350px;
+  margin: 100px auto;
+  padding: 20px;
+  background: black;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  filter: brightness(100%);
+}
+
+h2 {
+  text-align: center;
+  color: white;
+}
+.password-input {
+  position: relative;
+  width: 100%;
+  
+}
+
+input[type="text"],
+input[type="password"],
+input[type="email"] {
+  color: white;
+  width: 95%;
+  padding: 10px;
+  border: 1px solid rgb(96, 94, 94);
+  border-radius: 4px;
+  background-color: black;
+  margin: 10px auto;
+}
+
+.eye-icon {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: white;
+  padding: 0;
+}
+
+button[type="submit"] {
+  width: 100%;
+  padding: 10px;
+  background-color: #08e740;
+  color: black;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-bottom: 12px;
+}
+
+button[type="submit"]:hover {
+  background-color: #05fb3e;
+}
+
+.ChangeClick {
+  font-size: 15px;
+  font-weight: lighter;
+  color: white;
+}
+
+.ChangeClick p {
+  display: inline;
+  color: #007bff;
+  cursor: pointer;
+}
+
+.ChangeClick p:hover {
+  text-decoration: underline;
+}
+
+.sign-up-options {
+  background-color: bisque;
+  padding: 15px;
+  border-radius: 8px;
+  margin-top: 20px;
+}

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Published Blogs</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Roboto+Slab:wght@400;700&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/view.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-left">
+            <div class="navbar-item" id="home-btn">
+                <i class="fas fa-home"></i>
+            </div>
+        </div>
+        <div class="search-bar">
+            <input type="text" id="search-input" placeholder="Search blogs...">
+        </div>
+        <div class="navbar-right">
+            <div class="navbar-item" id="profile-btn">
+                <i class="fas fa-user"></i>
+            </div>
+            <div class="navbar-item" id="editor-btn">
+                <i class="fas fa-edit"></i>
+            </div>
+        </div>
+    </nav>
+
+    <div class="main-content">
+        <div class="left-container">
+            <h2 class="category-title">Categories</h2>
+            <div id="category-list">
+                <!-- Categories will be dynamically inserted here -->
+            </div>
+        </div>
+        <div class="right-container">
+            <div class="blog-grid" id="blog-grid">
+                <!-- Blog posts will be dynamically inserted here -->
+            </div>
+        </div>
+    </div>
+
+    <div id="blog-modal" class="blog-modal">
+        <div class="modal-content">
+            <img class="modal-image" src="" alt="Blog Image">
+            <div class="modal-text">
+                <span class="close-btn">&times;</span>
+                <div class="modal-info">
+                    <div id="modal-date-time"></div>
+                    <div id="modal-category"></div>
+                </div>
+                <h2 class="modal-title"></h2>
+                <div class="modal-content-text"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/javascript/view.js"></script>
+</body>
+</html>
