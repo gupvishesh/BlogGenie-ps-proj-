@@ -19,19 +19,21 @@ function validateToken(token) {
 }
 
 // Middleware to check for authentication cookie
-function checkForAuthenticationCookie (cookieName) {
-    return (req, res, next) => {
-        const token = req.cookies[cookieName];
-        if (!token) return next();
+function checkForAuthenticationCookie(cookieName) {
+  return (req, res, next) => {
+    const token = req.cookies[cookieName];
+    if (!token) return next();
 
-        try {
-            const userPayload = validateToken(token);
-            req.user = userPayload;
-            next();
-        } catch (error) {
-            next();
-        }
-    };
-};
+    try {
+      const userPayload = validateToken(token);
+      req.user = userPayload;
+      console.log('User authenticated:', req.user); // Log the authenticated user
+      next();
+    } catch (error) {
+      console.error('Token validation error:', error);
+      next();
+    }
+  };
+}
 
-module.exports = { createTokenForUser, validateToken , checkForAuthenticationCookie };
+module.exports = { createTokenForUser, validateToken, checkForAuthenticationCookie };

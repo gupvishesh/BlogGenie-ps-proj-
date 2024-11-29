@@ -29,6 +29,9 @@ app.use((req, res, next) => {
     next();
 });
 
+// Apply authentication middleware before routes
+app.use(checkForAuthenticationCookie('token'));
+
 // Routes
 app.use('/blogGenie', userRoute);
 app.use('/blogGenie', blogRoute);
@@ -38,9 +41,6 @@ app.get('/blogGenie/profile', (req, res) => {
     // Render the profile page
     res.render('profile', { user: req.user }); // Pass user data if needed
 });
-
-// Use authentication middleware after defining routes
-app.use(checkForAuthenticationCookie('token'));
 
 // Start the server
 const PORT = process.env.PORT || 3000;

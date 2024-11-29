@@ -1,9 +1,9 @@
 let publishedDate = null;
-    let profileData = {
-        username: "JohnDoe",
-        email: "johndoe@example.com",
-        profilePicture: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Screenshot%202024-10-25%20141616-KngqCB5CgBGQIbUN3nj8joYdWEMT36.png"
-    };
+    // let profileData = {
+    //     username: "JohnDoe",
+    //     email: "johndoe@example.com",
+    //     profilePicture: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Screenshot%202024-10-25%20141616-KngqCB5CgBGQIbUN3nj8joYdWEMT36.png"
+    // };
     let currentEditPost = null;
 
     function updateDateTime() {
@@ -119,33 +119,39 @@ let publishedDate = null;
         localStorage.setItem('darkMode', this.checked);
     });
 
-    document.getElementById('publish-btn').addEventListener('click', function() {
-        publishedDate = document.getElementById('current-date-time').textContent;
+    document.getElementById('publish-btn').addEventListener('click', async function() {
+        const publishedDate = new Date().toISOString();
         const blogData = {
-            id: currentEditPost ? currentEditPost.id : Date.now(),
             heading: document.getElementById('blog-heading').value,
             content: document.getElementById('blog-content').value,
             image: document.getElementById('image-preview').src,
             date: publishedDate,
             category: document.getElementById('category-dropdown').value,
-            author: profileData.username
+            author: document.getElementById('profile-username').textContent
         };
-        let blogPosts = JSON.parse(localStorage.getItem('blogPosts')) || [];
-        if (currentEditPost) {
-            const index = blogPosts.findIndex(post => post.id === currentEditPost.id);
-            if (index !== -1) {
-                blogPosts[index] = blogData;
+
+        try {
+            const response = await fetch('/blogGenie/blogs', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                credentials: 'include', // Include cookies in the request
+                body: JSON.stringify(blogData)
+            });
+            const data = await response.json();
+            if (response.ok) {
+                console.log('Blog published:', data);
+                alert('Blog post published successfully!');
+                window.location.href = '/blogGenie/profile';
             } else {
-                blogPosts.push(blogData);
+                console.error('Failed to publish blog:', data.error);
+                alert('Failed to publish blog post.');
             }
-        } else {
-            blogPosts.push(blogData);
+        } catch (error) {
+            console.error('Error publishing blog:', error);
+            alert('Error publishing blog post.');
         }
-        localStorage.setItem('blogPosts', JSON.stringify(blogPosts));
-        console.log('Blog published:', blogData);
-        alert('Blog post published successfully!');
-        // After publishing the blog post
-        window.location.href = '/blogGenie/profile';
     });
 
     const imageUpload = document.getElementById('image-upload');

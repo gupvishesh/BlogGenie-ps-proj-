@@ -500,13 +500,12 @@
     });
 
     document.getElementById('publish-btn').addEventListener('click', async function() {
-        const publishedDate = document.getElementById('current-date-time').textContent;
         const blogData = {
             heading: document.getElementById('blog-heading').value,
             content: document.getElementById('blog-content').value,
             image: document.getElementById('image-preview').src,
             category: document.getElementById('category-dropdown').value,
-            date: publishedDate
+            date: document.getElementById('current-date-time').textContent
         };
 
         try {
@@ -517,17 +516,18 @@
                 },
                 body: JSON.stringify(blogData)
             });
-
             const data = await response.json();
             if (response.ok) {
+                console.log('Blog published:', data);
                 alert('Blog post published successfully!');
-                window.location.href = '/blogGenie/profile'; // Fixed URL path
+                window.location.href = '/blogGenie/profile';
             } else {
-                alert('Failed to publish blog post: ' + data.message);
+                console.error('Failed to publish blog:', data.error);
+                alert('Failed to publish blog post.');
             }
         } catch (error) {
             console.error('Error publishing blog:', error);
-            alert('Error publishing blog post');
+            alert('Error publishing blog post.');
         }
     });
 

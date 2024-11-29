@@ -95,5 +95,6 @@ router.post("/signup", userController.registerUser);
 // User login route
 router.post("/login", userController.loginUser);
 
-// Export the router to be used in other parts of the application
+// Export the router and verifyToken middleware
 module.exports = router;
+module.exports.verifyToken = verifyToken;
