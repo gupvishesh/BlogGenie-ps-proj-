@@ -4,7 +4,7 @@ const path = require("path"); // Import Path for handling file paths
 const userController = require("../controllers/userController"); // Import the user controller
 const jwt = require('jsonwebtoken'); // Import JWT for token verification
 const User = require('../models/blogusers'); // Import the User model
-
+//const verifyToken = require('../services/authentication.js'); // Import the verifyToken middleware
 const router = Router(); // Create a new router instance
 
 // Configure Multer storage settings

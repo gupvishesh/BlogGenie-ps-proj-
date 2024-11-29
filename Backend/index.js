@@ -33,6 +33,12 @@ app.use((req, res, next) => {
 app.use('/blogGenie', userRoute);
 app.use('/blogGenie', blogRoute);
 
+// Assuming you have an Express app instance named 'app'
+app.get('/blogGenie/profile', (req, res) => {
+    // Render the profile page
+    res.render('profile', { user: req.user }); // Pass user data if needed
+});
+
 // Use authentication middleware after defining routes
 app.use(checkForAuthenticationCookie('token'));
 

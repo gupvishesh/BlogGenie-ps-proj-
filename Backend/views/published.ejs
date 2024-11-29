@@ -1,0 +1,48 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Published Blogs</title>
+    <link rel="stylesheet" href="/css/published.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-left">
+            <div class="navbar-item" id="home-btn">
+                <i class="fas fa-home"></i>
+            </div>
+        </div>
+        <div class="search-bar">
+            <input type="text" id="search-input" placeholder="Search blogs...">
+        </div>
+        <div class="navbar-right">
+            <div class="navbar-item" id="profile-btn">
+                <i class="fas fa-user"></i>
+            </div>
+            <div class="navbar-item" id="editor-btn">
+                <i class="fas fa-edit"></i>
+            </div>
+        </div>
+    </nav>
+
+    <div class="main-content">
+        <div class="blog-grid" id="blog-grid">
+            <% blogs.forEach(function(blog) { %>
+                <div class="blog-card" data-id="<%= blog._id %>">
+                    <img src="<%= blog.image %>" alt="<%= blog.heading %>">
+                    <div class="blog-info">
+                        <div class="blog-author"><%= blog.author %></div>
+                        <div class="blog-title"><%= blog.heading %></div>
+                        <div class="blog-category"><%= blog.category %></div>
+                    </div>
+                </div>
+            <% }); %>
+        </div>
+    </div>
+
+    <script src="/javascript/published.js"></script>
+</body>
+</html>

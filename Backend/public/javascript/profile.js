@@ -16,13 +16,14 @@ function updateDarkModeIcon() {
 
 // Remove loadProfileData function as we don't need it anymore - data comes from EJS template
 
-function loadBlogPosts() {
-    const blogGrid = document.getElementById('blog-grid');
-    blogGrid.innerHTML = '';
-    
-    const storedPosts = localStorage.getItem('blogPosts');
-    if (storedPosts) {
-        const blogPosts = JSON.parse(storedPosts);
+async function loadBlogPosts() {
+    try {
+        const response = await fetch('/blogGenie/blogs');
+        const blogPosts = await response.json();
+        
+        const blogGrid = document.getElementById('blog-grid');
+        blogGrid.innerHTML = '';
+        
         blogPosts.forEach(post => {
             const postElement = document.createElement('div');
             postElement.className = 'blog-card';
@@ -30,11 +31,32 @@ function loadBlogPosts() {
             postElement.innerHTML = `
                 <h3>${post.heading}</h3>
                 <p>${post.content.substring(0, 100)}...</p>
-                <small>${post.date}</small>
-                <button class="delete-btn" data-id="${post.id}">&times;</button>
+                <small>${new Date(post.createdAt).toLocaleDateString()}</small>
+                <button class="delete-btn" data-id="${post._id}">&times;</button>
+                <button class="edit-btn" data-id="${post._id}">Edit</button>
+                <button class="view-btn" data-id="${post._id}">View</button>
             `;
             blogGrid.appendChild(postElement);
         });
+
+        // Add event listeners for view and edit buttons
+        document.querySelectorAll('.view-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const postId = e.target.getAttribute('data-id');
+                window.location.href = `/blogGenie/blogs/view/${postId}`;
+            });
+        });
+
+        document.querySelectorAll('.edit-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const postId = e.target.getAttribute('data-id');
+                window.location.href = `/blogGenie/blogs/edit/${postId}`;
+            });
+        });
+    } catch (error) {
+        console.error('Error loading blog posts:', error);
     }
 }
 
@@ -53,20 +75,19 @@ document.getElementById('published-blogs-btn').addEventListener('click', functio
 
 document.getElementById('dark-mode-toggle').addEventListener('click', toggleDarkMode);
 
-document.getElementById('blog-grid').addEventListener('click', function(e) {
+document.getElementById('blog-grid').addEventListener('click', async function(e) {
     if (e.target.classList.contains('delete-btn')) {
-        const postId = parseInt(e.target.getAttribute('data-id'));
-        let blogPosts = JSON.parse(localStorage.getItem('blogPosts')) || [];
-        blogPosts = blogPosts.filter(post => post.id !== postId);
-        localStorage.setItem('blogPosts', JSON.stringify(blogPosts));
-        loadBlogPosts();
-    } else if (e.target.closest('.blog-card')) {
-        const postId = parseInt(e.target.closest('.blog-card').querySelector('.delete-btn').getAttribute('data-id'));
-        let blogPosts = JSON.parse(localStorage.getItem('blogPosts')) || [];
-        const selectedPost = blogPosts.find(post => post.id === postId);
-        if (selectedPost) {
-            localStorage.setItem('currentEditPost', JSON.stringify(selectedPost));
-            window.location.href = 'blog-editor.html';
+        e.stopPropagation();
+        const postId = e.target.getAttribute('data-id');
+        try {
+            const response = await fetch(`/blogGenie/blogs/${postId}`, {
+                method: 'DELETE'
+            });
+            if (response.ok) {
+                loadBlogPosts();
+            }
+        } catch (error) {
+            console.error('Error deleting blog post:', error);
         }
     }
 });

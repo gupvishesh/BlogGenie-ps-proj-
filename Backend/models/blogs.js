@@ -37,6 +37,12 @@ const postSchema = new mongoose.Schema(
         // Define the category field
         category: {
             type: String // The data type is String
+        },
+        // Define the userId field
+        userId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User',
+            required: true
         }
     },
     { timestamps: true } // Automatically add createdAt and updatedAt fields

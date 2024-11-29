@@ -144,7 +144,8 @@ let publishedDate = null;
         localStorage.setItem('blogPosts', JSON.stringify(blogPosts));
         console.log('Blog published:', blogData);
         alert('Blog post published successfully!');
-        window.location.href = 'published-blogs.html';
+        // After publishing the blog post
+        window.location.href = '/blogGenie/profile';
     });
 
     const imageUpload = document.getElementById('image-upload');

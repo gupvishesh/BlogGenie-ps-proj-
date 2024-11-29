@@ -77,7 +77,7 @@ const validateData = (data) => {
         sessionStorage.name = data.name;
         sessionStorage.email = data.email;
         location.href = '/';
-        window.location.href = '/profile';
+        window.location.href = '/blogGenie/profile';
     }
 }
 

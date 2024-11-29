@@ -439,7 +439,7 @@
     });
 
     document.getElementById('my-blogs-btn').addEventListener('click', function() {
-        window.location.href = 'profile.html';
+        window.location.href = '/blogGenie/profile';
     });
 
     document.getElementById('update-btn').addEventListener('click', function() {
@@ -490,7 +490,7 @@
     });
 
     document.getElementById('published-blogs-btn').addEventListener('click', function() {
-        window.location.href = 'published.html';
+        window.location.href = '/blogGenie/view';  // Changed from published-blogs.html
     });
 
     const darkModeToggle = document.getElementById('dark-mode-toggle');
@@ -499,32 +499,36 @@
         localStorage.setItem('darkMode', this.checked);
     });
 
-    document.getElementById('publish-btn').addEventListener('click', function() {
-        publishedDate = document.getElementById('current-date-time').textContent;
+    document.getElementById('publish-btn').addEventListener('click', async function() {
+        const publishedDate = document.getElementById('current-date-time').textContent;
         const blogData = {
-            id: currentEditPost ? currentEditPost.id : Date.now(),
             heading: document.getElementById('blog-heading').value,
             content: document.getElementById('blog-content').value,
             image: document.getElementById('image-preview').src,
-            date: publishedDate,
             category: document.getElementById('category-dropdown').value,
-            author: profileData.username
+            date: publishedDate
         };
-        let blogPosts = JSON.parse(localStorage.getItem('blogPosts')) || [];
-        if (currentEditPost) {
-            const index = blogPosts.findIndex(post => post.id === currentEditPost.id);
-            if (index !== -1) {
-                blogPosts[index] = blogData;
+
+        try {
+            const response = await fetch('/blogGenie/blogs', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(blogData)
+            });
+
+            const data = await response.json();
+            if (response.ok) {
+                alert('Blog post published successfully!');
+                window.location.href = '/blogGenie/profile'; // Fixed URL path
             } else {
-                blogPosts.push(blogData);
+                alert('Failed to publish blog post: ' + data.message);
             }
-        } else {
-            blogPosts.push(blogData);
+        } catch (error) {
+            console.error('Error publishing blog:', error);
+            alert('Error publishing blog post');
         }
-        localStorage.setItem('blogPosts', JSON.stringify(blogPosts));
-        console.log('Blog published:', blogData);
-        alert('Blog post published successfully!');
-        window.location.href = 'published-blogs.html';
     });
 
     const imageUpload = document.getElementById('image-upload');
@@ -552,7 +556,7 @@
     });
 
     document.getElementById('profile-box').addEventListener('click', function() {
-        window.location.href = 'profile.html';
+        window.location.href = '/blogGenie/profile';
     });
 
     document.addEventListener('click', function(e) {
