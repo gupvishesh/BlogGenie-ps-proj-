@@ -81,6 +81,14 @@ router.get("/chatbot", (req, res) => {
     res.render("chatbot.ejs"); // Render the chatbot.ejs template
 });
 
+// Logout route
+router.get("/logout", (req, res) => {
+    // Clear the 'token' cookie
+    res.clearCookie("token");
+    // Redirect to the login page after logout
+    res.redirect("/blogGenie/login");
+});
+
 // User registration route
 router.post("/signup", userController.registerUser);
 
