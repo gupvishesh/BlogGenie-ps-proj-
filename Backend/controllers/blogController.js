@@ -3,37 +3,35 @@ const User = require("../models/blogusers"); // Import User model
 
 // Create a new blog post
 exports.createBlogPost = async (req, res) => {
-  try {
-    const { heading, content, image, category, date } = req.body;
-    console.log('Received blog data:', req.body); // Log the received data
-    console.log('Authenticated user:', req.user); // Log the authenticated user
+    try {
+        const { heading, content, image, category } = req.body;
+        
+        if (!req.user || !req.user.id) {
+            console.log('User not authenticated');
+            return res.status(401).json({ error: 'User not authenticated' });
+        }
 
-    if (!req.user) {
-      return res.status(401).json({ error: 'User not authenticated' });
+        const newBlogPost = new BlogPost({
+            heading,
+            content,
+            image,
+            category,
+            author: req.user.id,
+            userId: req.user.id,
+            createdAt: new Date()
+        });
+
+        const savedBlog = await newBlogPost.save();
+        console.log('Blog saved successfully:', savedBlog);
+        
+        return res.status(201).json({
+            message: 'Blog created successfully',
+            blog: savedBlog
+        });
+    } catch (error) {
+        console.error('Error creating blog:', error);
+        return res.status(500).json({ error: 'Failed to create blog' });
     }
-
-    const user = await User.findById(req.user.id); // Fetch user from DB
-    if (!user) {
-      return res.status(404).json({ error: 'User not found' });
-    }
-
-    const newBlogPost = new BlogPost({
-      heading,
-      content,
-      image,
-      category,
-      date,
-      author: user.userName, // Set author from fetched user
-      userId: req.user.id // Ensure id exists in req.user
-    });
-
-    await newBlogPost.save();
-    console.log('Blog saved to database:', newBlogPost); // Log the saved blog post
-    res.status(201).json({ message: 'Blog post created successfully' });
-  } catch (error) {
-    console.error('Error saving blog post:', error);
-    res.status(500).json({ error: error.message });
-  }
 };
 
 // Get all blog posts

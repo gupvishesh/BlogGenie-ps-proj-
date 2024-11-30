@@ -4,6 +4,7 @@ const path = require("path"); // Import Path for handling file paths
 const userController = require("../controllers/userController"); // Import the user controller
 const jwt = require('jsonwebtoken'); // Import JWT for token verification
 const User = require('../models/blogusers'); // Import the User model
+const Blog = require('../models/blogs'); // Import the Blog model
 //const verifyToken = require('../services/authentication.js'); // Import the verifyToken middleware
 const router = Router(); // Create a new router instance
 
@@ -58,10 +59,21 @@ router.get("/signup", (req, res) => {
 router.get("/profile", verifyToken, async (req, res) => {
     try {
         const user = await User.findById(req.user.id);
-        console.log("User successfully found");
-        res.render("profile.ejs", { user });
+        if (!user) {
+            return res.redirect('/blogGenie/login');
+        }
+        
+        // Fetch blogs where author matches the user's ID
+        const userBlogs = await Blog.find({ author: req.user.id })
+            .sort({ createdAt: -1 }); // Sort by newest first
+        
+        console.log("Found blogs:", userBlogs); // Debug log
+        res.render("profile.ejs", { 
+            user: user, 
+            userBlogs: userBlogs 
+        });
     } catch (error) {
-        console.error("Error fetching user profile:", error);
+        console.error("Error in profile route:", error);
         res.redirect('/blogGenie/login');
     }
 });

@@ -16,49 +16,7 @@ function updateDarkModeIcon() {
 
 // Remove loadProfileData function as we don't need it anymore - data comes from EJS template
 
-async function loadBlogPosts() {
-    try {
-        const response = await fetch('/blogGenie/blogs');
-        const blogPosts = await response.json();
-        
-        const blogGrid = document.getElementById('blog-grid');
-        blogGrid.innerHTML = '';
-        
-        blogPosts.forEach(post => {
-            const postElement = document.createElement('div');
-            postElement.className = 'blog-card';
-            postElement.style.backgroundImage = `url('${post.image}')`;
-            postElement.innerHTML = `
-                <h3>${post.heading}</h3>
-                <p>${post.content.substring(0, 100)}...</p>
-                <small>${new Date(post.createdAt).toLocaleDateString()}</small>
-                <button class="delete-btn" data-id="${post._id}">&times;</button>
-                <button class="edit-btn" data-id="${post._id}">Edit</button>
-                <button class="view-btn" data-id="${post._id}">View</button>
-            `;
-            blogGrid.appendChild(postElement);
-        });
-
-        // Add event listeners for view and edit buttons
-        document.querySelectorAll('.view-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                const postId = e.target.getAttribute('data-id');
-                window.location.href = `/blogGenie/blogs/view/${postId}`;
-            });
-        });
-
-        document.querySelectorAll('.edit-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                const postId = e.target.getAttribute('data-id');
-                window.location.href = `/blogGenie/blogs/edit/${postId}`;
-            });
-        });
-    } catch (error) {
-        console.error('Error loading blog posts:', error);
-    }
-}
+// Remove the loadBlogPosts function and its invocation
 
 document.getElementById('home-btn').addEventListener('click', function() {
     window.location.href = '/blogGenie';
@@ -113,5 +71,4 @@ document.getElementById('file-input').addEventListener('change', function(event)
 darkMode = localStorage.getItem('darkMode') === 'true';
 document.body.classList.toggle('dark-mode', darkMode);
 updateDarkModeIcon();
-// Remove loadProfileData() call since data is rendered by EJS
-loadBlogPosts();
+// Remove loadBlogPosts(); from here

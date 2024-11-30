@@ -75,6 +75,11 @@
     </div>
     <input type="file" id="image-upload" accept="image/*">
     <button id="publish-btn">Publish</button>
+    <form action="/blogGenie/blogs" method="POST">
+        <input type="text" name="heading" placeholder="Blog Heading" required>
+        <textarea name="content" placeholder="Write your blog here..." required></textarea>
+        <button type="submit">Publish</button>
+    </form>
 </main>
 
 <div class="profile-box" id="profile-box">

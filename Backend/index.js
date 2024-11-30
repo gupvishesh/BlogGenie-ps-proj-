@@ -36,11 +36,10 @@ app.use(checkForAuthenticationCookie('token'));
 app.use('/blogGenie', userRoute);
 app.use('/blogGenie', blogRoute);
 
-// Assuming you have an Express app instance named 'app'
-app.get('/blogGenie/profile', (req, res) => {
-    // Render the profile page
-    res.render('profile', { user: req.user }); // Pass user data if needed
-});
+// Remove or comment out this route as it's already defined in userRoute.js
+// app.get('/blogGenie/profile', (req, res) => {
+//     res.render('profile', { user: req.user });
+// });
 
 // Start the server
 const PORT = process.env.PORT || 3000;

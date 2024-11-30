@@ -48,7 +48,30 @@
 <h1 class="blog-title">My Blogs</h1>
 
 <div class="blog-grid" id="blog-grid">
-    <!-- Blog posts will be dynamically inserted here so no need to modify this line or this div-->
+    <% if (userBlogs && userBlogs.length > 0) { %>
+        <% userBlogs.forEach(function(blog) { %>
+            <div class="blog-card">
+                <h3><%= blog.heading %></h3>
+                <p><%= blog.content.substring(0, 150) %>...</p>
+                <div class="blog-meta">
+                    <small>Created: <%= new Date(blog.createdAt).toLocaleDateString() %></small>
+                    <small>Category: <%= blog.category || 'Uncategorized' %></small>
+                </div>
+                <div class="blog-actions">
+                    <form action="/blogGenie/blogs/<%= blog._id %>?_method=DELETE" method="POST" class="delete-form">
+                        <button type="submit" class="delete-btn">&times;</button>
+                    </form>
+                    <a href="/blogGenie/blogs/edit/<%= blog._id %>" class="edit-btn">Edit</a>
+                    <a href="/blogGenie/blogs/view/<%= blog._id %>" class="view-btn">View</a>
+                </div>
+            </div>
+        <% }); %>
+    <% } else { %>
+        <div class="no-blogs">
+            <p>No blogs found. Start writing your first blog!</p>
+            <a href="/blogGenie/new" class="create-blog-btn">Create Blog</a>
+        </div>
+    <% } %>
 </div>
 
 
