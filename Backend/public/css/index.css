@@ -309,15 +309,16 @@ body {
 }
 
 #card1 .card-body {
-	background-color: #001e27;
+	background-color: #002414;
 }
 #card2 .card-body {
 	/* background-color: #7EC4CF; */
-	background-color: #351701;
-}
-#card3 .card-body {
 	background-color: #280434;
 }
+#card3 .card-body {
+	background-color: #110135;
+}
+
 
 
 .card-body {
