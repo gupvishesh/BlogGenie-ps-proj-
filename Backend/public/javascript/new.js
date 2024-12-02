@@ -106,7 +106,7 @@ let publishedDate = null;
     });
 
     document.getElementById('chatbot-btn').addEventListener('click', function() {
-        window.location.href = 'chatbot.html'; // Replace with your actual chatbot page URL
+        window.location.href = '/blogGenie/chatbot'; 
     });
 
     document.getElementById('published-blogs-btn').addEventListener('click', function() {

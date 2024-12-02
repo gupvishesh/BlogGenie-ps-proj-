@@ -109,6 +109,7 @@ function searchBlogs(query) {
 }
 
 // Event listeners
+
 document.getElementById('home-btn').addEventListener('click', () => window.location.href = '/blogGenie');
 document.getElementById('profile-btn').addEventListener('click', () => window.location.href = '/blogGenie/profile');
 document.getElementById('editor-btn').addEventListener('click', () => window.location.href = '/blogGenie/new');
