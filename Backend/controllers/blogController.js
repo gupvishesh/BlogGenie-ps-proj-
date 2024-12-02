@@ -11,12 +11,19 @@ exports.createBlogPost = async (req, res) => {
             return res.status(401).json({ error: 'User not authenticated' });
         }
 
+        // Find the user to get their username
+        const user = await User.findById(req.user.id);
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+
         const newBlogPost = new BlogPost({
             heading,
             content,
             image,
             category,
             author: req.user.id,
+            authorName: user.userName, // Add the author's name explicitly
             userId: req.user.id,
             createdAt: new Date()
         });
@@ -88,19 +95,24 @@ exports.deleteBlogPost = async (req, res) => {
     }
     res.status(200).json({ message: "Blog post deleted successfully" });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status (500).json({ error: error.message });
   }
 };
 
 // Add these new controller methods
 exports.viewBlogPost = async (req, res) => {
   try {
-    const blog = await BlogPost.findById(req.params.id);
+    const blog = await BlogPost.findById(req.params.id).populate('author', 'userName');
     if (!blog) {
       return res.status(404).json({ error: "Blog post not found" });
     }
+    
+    // Add the author's name to the blog object
+    blog.authorName = blog.author.userName;
+    
     res.render('viewBlog', { blog });
   } catch (error) {
+    console.error('Error in viewBlogPost:', error);
     res.status(500).json({ error: error.message });
   }
 };

@@ -22,6 +22,9 @@ router.delete('/blogs/:id', verifyToken, blogController.deleteBlogPost);
 router.get('/blogs/view/:id', verifyToken, async (req, res) => {
     try {
         const blog = await Blog.findById(req.params.id);
+        if (!blog) {
+            return res.redirect('/blogGenie/profile');
+        }
         res.render('viewBlog.ejs', { blog });
     } catch (error) {
         console.error('Error fetching blog:', error);

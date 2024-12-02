@@ -50,7 +50,7 @@
 <div class="blog-grid" id="blog-grid">
     <% if (userBlogs && userBlogs.length > 0) { %>
         <% userBlogs.forEach(function(blog) { %>
-            <div class="blog-card">
+            <div class="blog-card" onclick="viewBlog('<%= blog._id %>')">
                 <h3><%= blog.heading %></h3>
                 <p><%= blog.content.substring(0, 150) %>...</p>
                 <div class="blog-meta">
@@ -59,10 +59,8 @@
                 </div>
                 <div class="blog-actions">
                     <form action="/blogGenie/blogs/<%= blog._id %>?_method=DELETE" method="POST" class="delete-form">
-                        <button type="submit" class="delete-btn">&times;</button>
+                        <button type="submit" class="delete-btn" onclick="event.stopPropagation()">&times;</button>
                     </form>
-                    <a href="/blogGenie/blogs/edit/<%= blog._id %>" class="edit-btn">Edit</a>
-                    <a href="/blogGenie/blogs/view/<%= blog._id %>" class="view-btn">View</a>
                 </div>
             </div>
         <% }); %>
@@ -85,5 +83,12 @@
 
 <input type="file" id="file-input" accept="image/*">
 <script src="/javascript/profile.js"></script>
+
+<script>
+function viewBlog(blogId) {
+    window.location.href = `/blogGenie/blogs/view/${blogId}`;
+}
+</script>
+
 </body>
 </html>
