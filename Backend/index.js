@@ -12,7 +12,7 @@ const { checkForAuthenticationCookie } = require('./middlewares/authentication')
 const BlogPost = require("./models/blogs");
 
 // Connect to MongoDB Atlas
-mongoose.connect(process.env.MONGO_URI)
+mongoose.connect("mongodb+srv://Arnav_Agarwal:Arnav2005@cluster0.no81p.mongodb.net/SampleDatabase1?retryWrites=true&w=majority&appName=Cluster0")
     .then(() => console.log('Connection to MongoDB Atlas successful'))
     .catch(err => console.log('Error connecting to MongoDB Atlas:', err));
 console.log('MongoDB URI:', process.env.MONGO_URI);
