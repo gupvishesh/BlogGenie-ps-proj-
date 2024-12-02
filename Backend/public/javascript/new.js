@@ -189,7 +189,7 @@ let publishedDate = null;
             profileBox.style.display = 'none';
         }
     });
-
+//adds date and time on selecting category
     document.getElementById('category-dropdown').addEventListener('change', updateDateTime);
 
     document.querySelector('.submit-btn').addEventListener('click', () => {
