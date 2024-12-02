@@ -11,12 +11,19 @@ exports.createBlogPost = async (req, res) => {
             return res.status(401).json({ error: 'User not authenticated' });
         }
 
+        // Find the user to get their username
+        const user = await User.findById(req.user.id);
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+
         const newBlogPost = new BlogPost({
             heading,
             content,
             image,
             category,
             author: req.user.id,
+            authorName: user.userName, // Add the author's name explicitly
             userId: req.user.id,
             createdAt: new Date()
         });
@@ -38,6 +45,14 @@ exports.createBlogPost = async (req, res) => {
 exports.getAllBlogPosts = async (req, res) => {
   try {
     const blogPosts = await BlogPost.find({ userId: req.user._id });
+    res.status(200).json(blogPosts);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+exports.getAllBlogs = async (req, res) => {
+  try {
+    const blogPosts = await BlogPost.find();
     res.status(200).json(blogPosts);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -80,19 +95,24 @@ exports.deleteBlogPost = async (req, res) => {
     }
     res.status(200).json({ message: "Blog post deleted successfully" });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status (500).json({ error: error.message });
   }
 };
 
 // Add these new controller methods
 exports.viewBlogPost = async (req, res) => {
   try {
-    const blog = await BlogPost.findById(req.params.id);
+    const blog = await BlogPost.findById(req.params.id).populate('author', 'userName');
     if (!blog) {
       return res.status(404).json({ error: "Blog post not found" });
     }
+    
+    // Add the author's name to the blog object
+    blog.authorName = blog.author.userName;
+    
     res.render('viewBlog', { blog });
   } catch (error) {
+    console.error('Error in viewBlogPost:', error);
     res.status(500).json({ error: error.message });
   }
 };
@@ -111,9 +131,19 @@ exports.editBlogPost = async (req, res) => {
 
 exports.getAllPublishedBlogs = async (req, res) => {
   try {
-    const blogs = await BlogPost.find().sort({ createdAt: -1 });
+    console.log("Blogs with populated authors:");
+    const blogs = await BlogPost.find().sort({ createdAt: -1 }).populate('author');
     res.render('published', { blogs }); // This will render the published.ejs template
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
+
+exports.getAllBlogs=async(req,res)=>{
+  try{
+    const blogs = await BlogPost.find().sort({ createdAt: -1 }).populate('author');
+    res.render('test', { blogs });
+  }catch(error){
+    res.status(500).json({ error: error.message });
+  }
+}

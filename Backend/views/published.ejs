@@ -34,7 +34,7 @@
                 <div class="blog-card" data-id="<%= blog._id %>">
                     <img src="<%= blog.image %>" alt="<%= blog.heading %>">
                     <div class="blog-info">
-                        <div class="blog-author"><%= blog.author %></div>
+                        <div class="blog-author"><%= blog.author && blog.author.userName ? blog.author.userName : "Unknown Author"  %></div>
                         <div class="blog-title"><%= blog.heading %></div>
                         <div class="blog-category"><%= blog.category %></div>
                     </div>
@@ -43,6 +43,6 @@
         </div>
     </div>
 
-    <script src="/javascript/published.js"></script>
+    <script src="/javascript/view.js"></script>
 </body>
 </html>

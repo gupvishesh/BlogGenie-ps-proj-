@@ -1,20 +1,20 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>View Blog</title>
-    <link rel="stylesheet" href="/css/viewBlog.css">
+    <title><%= blog.heading %></title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Roboto+Slab:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/viewBlog.css">
 </head>
 <body>
     <nav class="sidebar">
-        <div class="menu-item" id="back-btn">
+        <div class="menu-item" id="back-btn" onclick="window.location.href='/blogGenie/profile'">
             <i class="fas fa-arrow-left"></i>
             <span class="tooltip">Back</span>
         </div>
-        <div class="menu-item" id="edit-btn">
+        <div class="menu-item" id="edit-btn" onclick="window.location.href='/blogGenie/blogs/edit/<%= blog._id %>'">
             <i class="fas fa-edit"></i>
             <span class="tooltip">Edit</span>
         </div>
@@ -22,27 +22,25 @@
 
     <main class="content">
         <article class="blog-post">
-            <img src="<%= blog.image %>" alt="Blog Image" class="blog-image">
+            <% if (blog.image) { %>
+                <div class="blog-image-container">
+                    <img src="<%= blog.image %>" alt="Blog Image" class="blog-image">
+                </div>
+            <% } %>
             <h1 class="blog-title"><%= blog.heading %></h1>
             <div class="blog-meta">
-                <span class="author">By <%= blog.author %></span>
-                <span class="date"><%= new Date(blog.createdAt).toLocaleDateString() %></span>
-                <span class="category"><%= blog.category %></span>
+                <span class="author">By <%= blog.authorName %></span>
+                <span class="date"><%= new Date(blog.createdAt).toLocaleDateString('en-US', { 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric' 
+                }) %></span>
+                <span class="category"><%= blog.category || 'Uncategorized' %></span>
             </div>
             <div class="blog-content">
                 <%= blog.content %>
             </div>
         </article>
     </main>
-
-    <script>
-        document.getElementById('back-btn').addEventListener('click', () => {
-            window.location.href = '/blogGenie/profile';
-        });
-
-        document.getElementById('edit-btn').addEventListener('click', () => {
-            window.location.href = `/blogGenie/blogs/edit/<%= blog._id %>`;
-        });
-    </script>
 </body>
 </html>

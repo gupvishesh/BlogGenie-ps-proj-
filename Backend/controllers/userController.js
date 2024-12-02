@@ -3,7 +3,7 @@ const User = require('../models/blogusers');
 const jwt = require('jsonwebtoken');
 
 // Log the MongoDB URI
-console.log(`MongoDB URI: ${mongoose.connection.host}`);
+// console.log(`MongoDB URI: ${mongoose.connection.host}`);
 
 // Log the collection names
 mongoose.connection.on('open', () => {

@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const app = express();
 const mongoose = require('mongoose');
@@ -8,11 +9,13 @@ const userRoute = require('./routes/userRoute');
 const blogRoute = require('./routes/blogRoute');
 const { checkForAuthenticationCookie } = require('./middlewares/authentication');
 
+const BlogPost = require("./models/blogs");
 
 // Connect to MongoDB Atlas
-mongoose.connect('mongodb+srv://Arnav_Agarwal:Arnav2005@cluster0.no81p.mongodb.net/SampleDatabase1?retryWrites=true&w=majority&appName=Cluster0')
+mongoose.connect(process.env.MONGO_URI)
     .then(() => console.log('Connection to MongoDB Atlas successful'))
     .catch(err => console.log('Error connecting to MongoDB Atlas:', err));
+console.log('MongoDB URI:', process.env.MONGO_URI);
 
 // Middleware setup
 app.use(express.urlencoded({ extended: true }));
@@ -35,11 +38,6 @@ app.use(checkForAuthenticationCookie('token'));
 // Routes
 app.use('/blogGenie', userRoute);
 app.use('/blogGenie', blogRoute);
-
-// Remove or comment out this route as it's already defined in userRoute.js
-// app.get('/blogGenie/profile', (req, res) => {
-//     res.render('profile', { user: req.user });
-// });
 
 // Start the server
 const PORT = process.env.PORT || 3000;
