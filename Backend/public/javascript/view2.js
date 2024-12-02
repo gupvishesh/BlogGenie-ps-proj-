@@ -64,7 +64,7 @@ function openBlogModal(post) {
     const modalContent = modal.querySelector('.modal-content-text');
 
     modalImage.src = post.image;
-    modalDateTime.textContent = new Date(post.date).toLocaleString(); // Ensure proper date formatting
+    modalDateTime.textContent = new Date(post.createdAt).toLocaleString().split(',')[0]; // Ensure proper date formatting
     modalCategory.textContent = post.category || 'Uncategorized';
     modalTitle.textContent = post.heading;
     modalContent.textContent = post.content;
