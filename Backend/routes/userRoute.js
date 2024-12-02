@@ -84,8 +84,14 @@ router.get("/new", (req, res) => {
 });
 
 // Define a route for the view page
-router.get("/view", (req, res) => {
-    res.render("view.ejs"); // Render the view.ejs template
+router.get("/view", async (req, res) => {
+    try{
+        const blogs = await Blog.find().sort({ createdAt: -1 }).populate('author');
+        res.render('view', { blogs });
+      }catch(error){
+        res.status(500).json({ error: error.message });
+      }
+    // res.render("view.ejs");  Render the view.ejs template
 });
 
 // Define a route for the chatbot page

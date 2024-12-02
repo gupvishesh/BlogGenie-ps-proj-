@@ -1,14 +1,11 @@
 const categories = [
-    { name: 'Food', image: '/images/Daltadka.jpeg'},
+    { name: 'Food', image: '/images/Daltadka.jpeg' },
     { name: 'Business', image: '/images/business.jpeg' },
-    //{ name: 'Personal', image: 'https://source.unsplash.com/random/100x100?personal' },
     { name: 'Health Fitness', image: '/images/fitness.jpeg' },
     { name: 'Travel', image: '/images/Travel.jpeg' },
     { name: 'Career', image: '/images/career.jpeg' },
-    //{ name: 'Others', image: 'https://source.unsplash.com/random/100x100?others' }
 ];
 
-// Function to load categories
 function loadCategories() {
     const categoryList = document.getElementById('category-list');
     categories.forEach(category => {
@@ -23,27 +20,25 @@ function loadCategories() {
     });
 }
 
-// Function to load blog posts
-function loadBlogPosts(category = null) {
+async function loadBlogPosts(category) {
     const blogGrid = document.getElementById('blog-grid');
     blogGrid.innerHTML = '';
-    
-    // Retrieve blog posts from localStorage
-    const storedPosts = localStorage.getItem('blogPosts');
-    if (storedPosts) {
-        const blogPosts = JSON.parse(storedPosts);
-        
-        const filteredPosts = category && category !== 'Others'
-            ? blogPosts.filter(post => post.category === category)
-            : blogPosts;
 
-        filteredPosts.forEach(post => {
+    try {
+        url= category
+        ? `/blogGenie/blogs/category/${encodeURIComponent(category)}`  // Filter by category
+        : '/blogGenie/allblogs'; // No category, so fetch all blogs
+        // Fetch blogs from the API
+        const response = await fetch(url);
+        const blogPosts = await response.json();
+        console.log("blogposts=",blogPosts);
+        blogPosts.forEach(post => {
             const postElement = document.createElement('div');
             postElement.className = 'blog-card';
             postElement.innerHTML = `
                 <img src="${post.image}" alt="${post.heading}">
                 <div class="blog-info">
-                    <div class="blog-author">${post.author}</div>
+                    <div class="blog-author">${post.author.userName}</div>
                     <div class="blog-title">${post.heading}</div>
                     <div class="blog-category">${post.category || 'Uncategorized'}</div>
                 </div>
@@ -51,15 +46,15 @@ function loadBlogPosts(category = null) {
             postElement.addEventListener('click', () => openBlogModal(post));
             blogGrid.appendChild(postElement);
         });
+    } catch (error) {
+        console.error('Error loading blog posts:', error);
     }
 }
 
-// Function to filter blogs by category
-function filterBlogsByCategory(category) {
+async function filterBlogsByCategory(category) {
     loadBlogPosts(category);
 }
 
-// Function to open blog modal
 function openBlogModal(post) {
     const modal = document.getElementById('blog-modal');
     const modalImage = modal.querySelector('.modal-image');
@@ -69,7 +64,7 @@ function openBlogModal(post) {
     const modalContent = modal.querySelector('.modal-content-text');
 
     modalImage.src = post.image;
-    modalDateTime.textContent = post.date;
+    modalDateTime.textContent = new Date(post.date).toLocaleString(); // Ensure proper date formatting
     modalCategory.textContent = post.category || 'Uncategorized';
     modalTitle.textContent = post.heading;
     modalContent.textContent = post.content;
@@ -78,18 +73,14 @@ function openBlogModal(post) {
     document.body.style.overflow = 'hidden'; // Prevent scrolling when modal is open
 }
 
-// Function to search blogs
-function searchBlogs(query) {
+async function searchBlogs(query) {
     const blogGrid = document.getElementById('blog-grid');
     blogGrid.innerHTML = '';
-    
-    const storedPosts = localStorage.getItem('blogPosts');
-    if (storedPosts) {
-        const blogPosts = JSON.parse(storedPosts);
-        const filteredPosts = blogPosts.filter(post => 
-            post.heading.toLowerCase().includes(query.toLowerCase()) ||
-            post.category.toLowerCase().includes(query.toLowerCase())
-        );
+
+    try {
+        // Fetch search results from the API
+        const response = await fetch(`/api/blogs/search?q=${encodeURIComponent(query)}`);
+        const filteredPosts = await response.json();
 
         filteredPosts.forEach(post => {
             const postElement = document.createElement('div');
@@ -105,10 +96,17 @@ function searchBlogs(query) {
             postElement.addEventListener('click', () => openBlogModal(post));
             blogGrid.appendChild(postElement);
         });
+
+        if (filteredPosts.length === 0) {
+            blogGrid.innerHTML = '<p>No blogs found matching your query.</p>';
+        }
+    } catch (error) {
+        console.error('Error searching blogs:', error);
+        blogGrid.innerHTML = '<p>Error searching blogs. Please try again later.</p>';
     }
 }
 
-// Event listeners
+//Event listeners
 document.getElementById('home-btn').addEventListener('click', () => window.location.href = '/blogGenie');
 document.getElementById('profile-btn').addEventListener('click', () => window.location.href = '/blogGenie/profile');
 document.getElementById('editor-btn').addEventListener('click', () => window.location.href = '/blogGenie/new');
@@ -120,16 +118,20 @@ document.querySelector('.close-btn').addEventListener('click', () => {
 
 window.addEventListener('click', (event) => {
     if (event.target === document.getElementById('blog-modal')) {
-        
+       
         document.getElementById('blog-modal').style.display = 'none';
-        document.body.style.overflow = 'auto'; // Re-enable scrolling
+        document.body.style.overflow = 'auto';  //Re-enable scrolling
     }
 });
 
 document.getElementById('search-input').addEventListener('input', (e) => {
-    searchBlogs(e.target.value);
+    const query = e.target.value.trim();
+    if (query.length > 0) {
+        searchBlogs(query);
+    } else {
+        loadBlogPosts(); // Reload all blogs if the query is cleared
+    }
 });
 
-// Initialize the page
 loadCategories();
 loadBlogPosts();

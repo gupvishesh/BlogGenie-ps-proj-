@@ -43,6 +43,14 @@ exports.getAllBlogPosts = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+exports.getAllBlogs = async (req, res) => {
+  try {
+    const blogPosts = await BlogPost.find();
+    res.status(200).json(blogPosts);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
 
 // Get a single blog post by ID
 exports.getBlogPostById = async (req, res) => {
@@ -111,9 +119,19 @@ exports.editBlogPost = async (req, res) => {
 
 exports.getAllPublishedBlogs = async (req, res) => {
   try {
-    const blogs = await BlogPost.find().sort({ createdAt: -1 });
+    console.log("Blogs with populated authors:");
+    const blogs = await BlogPost.find().sort({ createdAt: -1 }).populate('author');
     res.render('published', { blogs }); // This will render the published.ejs template
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
+
+exports.getAllBlogs=async(req,res)=>{
+  try{
+    const blogs = await BlogPost.find().sort({ createdAt: -1 }).populate('author');
+    res.render('test', { blogs });
+  }catch(error){
+    res.status(500).json({ error: error.message });
+  }
+}
