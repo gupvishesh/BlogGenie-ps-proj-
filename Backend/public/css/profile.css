@@ -54,9 +54,9 @@ body {
     padding: 5px 0;
     position: absolute;
     z-index: 1;
-    bottom: 100%;
+    /* bottom: 100%;
     left: 30%;
-    margin-left: -60px;
+    margin-left: -60px; */
     opacity: 0;
     transition: opacity 0.3s;
 }
@@ -64,10 +64,10 @@ body {
     visibility: visible;
     opacity: 1;
 }
-.menu-item:hover .tooltip {
-    left: calc(100% + 10px); /* Position it to the right of the menu item */
-    max-width: 200px; /* Set a maximum width */
-}
+/* .menu-item:hover .tooltip {
+    left: calc(100% + 10px);
+    max-width: 200px; 
+} */
 .content {
     margin-left: 60px;
     padding: 20px;
@@ -204,4 +204,59 @@ body {
 }
 #file-input {
     display: none;
+}
+/* Logout button styles*/
+.logout-btn {
+    position: absolute; 
+    top: 10px;          
+    right: 10px;        
+    margin: 0;          
+}
+.logout-btn button {
+    background-color: #00ff00; 
+    color: #000;               
+    border: none;              
+    padding: 10px 20px;        
+    border-radius: 5px;        
+    font-size: 16px;           
+    cursor: pointer;           
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2); 
+}
+
+.logout-btn button:hover {
+    background-color: #00cc00; 
+    color: #fff;               
+}
+/* Center the no-blogs element on the entire profile page */
+.no-blogs {
+    display: flex;                  
+    flex-direction: column;         
+    justify-content: center;       
+    align-items: center;            
+    text-align: center;                   
+}
+
+/* Style for the paragraph inside no-blogs */
+.no-blogs p {
+    font-size: 18px;                      
+    margin-bottom: 20px;            
+}
+
+/* Style for the Create Blog button */
+.create-blog-btn {
+    display: inline-block;          
+    text-decoration: none;          
+    background-color: #007bff;      
+    color: white;                   
+    padding: 10px 20px;             
+    border-radius: 5px;             
+    font-size: 16px;                
+    font-weight: bold;              
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
+    transition: background-color 0.3s ease; 
+}
+
+/* Hover effect for Create Blog button */
+.create-blog-btn:hover {
+    background-color: #0056b3;      
 }
