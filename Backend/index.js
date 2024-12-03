@@ -1,4 +1,7 @@
+// Load environment variables from .env file
 require('dotenv').config();
+
+// Import required dependencies
 const express = require('express');
 const app = express();
 const mongoose = require('mongoose');
@@ -11,18 +14,18 @@ const { checkForAuthenticationCookie } = require('./middlewares/authentication')
 
 const BlogPost = require("./models/blogs");
 
-// Connect to MongoDB Atlas
+// MongoDB connection setup
 mongoose.connect("mongodb+srv://Arnav_Agarwal:Arnav2005@cluster0.no81p.mongodb.net/SampleDatabase1?retryWrites=true&w=majority&appName=Cluster0")
     .then(() => console.log('Connection to MongoDB Atlas successful'))
     .catch(err => console.log('Error connecting to MongoDB Atlas:', err));
 console.log('MongoDB URI:', process.env.MONGO_URI);
 
-// Middleware setup
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
-app.use(methodOverride('_method'));
-app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
+// Middleware Configuration
+app.use(express.urlencoded({ extended: true })); // Parse URL-encoded bodies
+app.use(express.json()); // Parse JSON bodies
+app.use(methodOverride('_method')); // Enable HTTP method override
+app.use(cookieParser()); // Parse Cookie header
+app.use(express.static(path.join(__dirname, 'public'))); // Serve static files
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 

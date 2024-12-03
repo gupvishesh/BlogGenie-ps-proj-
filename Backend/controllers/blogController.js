@@ -1,11 +1,13 @@
+// Import required models
 const BlogPost = require("../models/blogs");
-const User = require("../models/blogusers"); // Import User model
+const User = require("../models/blogusers");
 
-// Create a new blog post
+// Blog Creation Controller
 exports.createBlogPost = async (req, res) => {
     try {
         const { heading, content, image, category } = req.body;
         
+        // Verify user authentication
         if (!req.user || !req.user.id) {
             console.log('User not authenticated');
             return res.status(401).json({ error: 'User not authenticated' });
@@ -41,109 +43,112 @@ exports.createBlogPost = async (req, res) => {
     }
 };
 
-// Get all blog posts
+// Blog Retrieval Controllers
 exports.getAllBlogPosts = async (req, res) => {
-  try {
-    const blogPosts = await BlogPost.find({ userId: req.user._id });
-    res.status(200).json(blogPosts);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
+    try {
+        const blogPosts = await BlogPost.find({ userId: req.user._id });
+        res.status(200).json(blogPosts);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
 };
+
 exports.getAllBlogs = async (req, res) => {
-  try {
-    const blogPosts = await BlogPost.find();
-    res.status(200).json(blogPosts);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
+    try {
+        const blogPosts = await BlogPost.find();
+        res.status(200).json(blogPosts);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
 };
 
-// Get a single blog post by ID
+// Single Blog Operations
 exports.getBlogPostById = async (req, res) => {
-  try {
-    const blogPost = await BlogPost.findById(req.params.id);
-    if (!blogPost) {
-      return res.status(404).json({ error: "Blog post not found" });
+    try {
+        const blogPost = await BlogPost.findById(req.params.id);
+        if (!blogPost) {
+            return res.status(404).json({ error: "Blog post not found" });
+        }
+        res.status(200).json(blogPost);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
     }
-    res.status(200).json(blogPost);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
 };
 
-// Update a blog post
+// Blog Update Controller
 exports.updateBlogPost = async (req, res) => {
-  try {
-    const { heading, content, image, category } = req.body;
-    const blogPost = await BlogPost.findByIdAndUpdate(req.params.id, { heading, content, image, category }, { new: true });
-    if (!blogPost) {
-      return res.status(404).json({ error: "Blog post not found" });
+    try {
+        const { heading, content, image, category } = req.body;
+        const blogPost = await BlogPost.findByIdAndUpdate(req.params.id, { heading, content, image, category }, { new: true });
+        if (!blogPost) {
+            return res.status(404).json({ error: "Blog post not found" });
+        }
+        res.status(200).json({ message: "Blog post updated successfully" });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
     }
-    res.status(200).json({ message: "Blog post updated successfully" });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
 };
 
-// Delete a blog post
+// Blog Deletion Controller
 exports.deleteBlogPost = async (req, res) => {
-  try {
-    const blogPost = await BlogPost.findByIdAndDelete(req.params.id);
-    if (!blogPost) {
-      return res.status(404).json({ error: "Blog post not found" });
+    try {
+        const blogPost = await BlogPost.findByIdAndDelete(req.params.id);
+        if (!blogPost) {
+            return res.status(404).json({ error: "Blog post not found" });
+        }
+        res.status(200).json({ message: "Blog post deleted successfully" });
+    } catch (error) {
+        res.status (500).json({ error: error.message });
     }
-    res.status(200).json({ message: "Blog post deleted successfully" });
-  } catch (error) {
-    res.status (500).json({ error: error.message });
-  }
 };
 
-// Add these new controller methods
+// Blog View Controllers
 exports.viewBlogPost = async (req, res) => {
-  try {
-    const blog = await BlogPost.findById(req.params.id).populate('author', 'userName');
-    if (!blog) {
-      return res.status(404).json({ error: "Blog post not found" });
+    try {
+        const blog = await BlogPost.findById(req.params.id).populate('author', 'userName');
+        if (!blog) {
+            return res.status(404).json({ error: "Blog post not found" });
+        }
+        
+        // Add the author's name to the blog object
+        blog.authorName = blog.author.userName;
+        
+        res.render('viewBlog', { blog });
+    } catch (error) {
+        console.error('Error in viewBlogPost:', error);
+        res.status(500).json({ error: error.message });
     }
-    
-    // Add the author's name to the blog object
-    blog.authorName = blog.author.userName;
-    
-    res.render('viewBlog', { blog });
-  } catch (error) {
-    console.error('Error in viewBlogPost:', error);
-    res.status(500).json({ error: error.message });
-  }
 };
 
+// Blog Edit Controller
 exports.editBlogPost = async (req, res) => {
-  try {
-    const blog = await BlogPost.findById(req.params.id);
-    if (!blog) {
-      return res.status(404).json({ error: "Blog post not found" });
+    try {
+        const blog = await BlogPost.findById(req.params.id);
+        if (!blog) {
+            return res.status(404).json({ error: "Blog post not found" });
+        }
+        res.render('blog-editor', { blog });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
     }
-    res.render('blog-editor', { blog });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
 };
 
+// Published Blogs Controller
 exports.getAllPublishedBlogs = async (req, res) => {
-  try {
-    console.log("Blogs with populated authors:");
-    const blogs = await BlogPost.find().sort({ createdAt: -1 }).populate('author');
-    res.render('published', { blogs }); // This will render the published.ejs template
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
+    try {
+        console.log("Blogs with populated authors:");
+        const blogs = await BlogPost.find().sort({ createdAt: -1 }).populate('author');
+        res.render('published', { blogs }); // This will render the published.ejs template
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
 };
 
 exports.getAllBlogs=async(req,res)=>{
-  try{
-    const blogs = await BlogPost.find().sort({ createdAt: -1 }).populate('author');
-    res.render('test', { blogs });
-  }catch(error){
-    res.status(500).json({ error: error.message });
-  }
-}
+    try{
+        const blogs = await BlogPost.find().sort({ createdAt: -1 }).populate('author');
+        res.render('test', { blogs });
+    }catch(error){
+        res.status(500).json({ error: error.message });
+    }
+};
