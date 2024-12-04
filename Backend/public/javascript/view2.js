@@ -25,13 +25,19 @@ async function loadBlogPosts(category) {
     blogGrid.innerHTML = '';
 
     try {
-        url= category
-        ? `/blogGenie/blogs/category/${encodeURIComponent(category)}`  // Filter by category
-        : '/blogGenie/allblogs'; // No category, so fetch all blogs
-        // Fetch blogs from the API
+        const url = category
+            ? `/blogGenie/blogs/category/${encodeURIComponent(category)}`
+            : '/blogGenie/allblogs';
+            
         const response = await fetch(url);
         const blogPosts = await response.json();
-        console.log("blogposts=",blogPosts);
+        
+        if (blogPosts.length === 0) {
+            console.log(category 
+                ? `No blogs found in category: ${category}`
+                : 'No blogs found');
+        }
+
         blogPosts.forEach(post => {
             const postElement = document.createElement('div');
             postElement.className = 'blog-card';
@@ -47,7 +53,8 @@ async function loadBlogPosts(category) {
             blogGrid.appendChild(postElement);
         });
     } catch (error) {
-        console.error('Error loading blog posts:', error);
+        console.error('Failed to load blog posts:', error.message);
+        blogGrid.innerHTML = '<p>Error loading blog posts. Please try again later.</p>';
     }
 }
 
@@ -127,7 +134,7 @@ async function searchBlogs(query) {
             blogGrid.appendChild(postElement);
         });
     } catch (error) {
-        console.error('Search error:', error);
+        console.error('Search failed:', error.message);
         blogGrid.innerHTML = `
             <div class="error-message">
                 <p>Unable to perform search at this time.</p>

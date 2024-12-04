@@ -40,10 +40,14 @@ router.get('/blogs/search', verifyToken, async (req, res) => {
             date: blog.createdAt
         }));
 
-        console.log('Search results:', formattedBlogs); // Debug log
+        // Log only if there's an issue with results
+        if (formattedBlogs.length === 0) {
+            console.log(`No search results found for query: "${query}"`);
+        }
+
         res.json(formattedBlogs);
     } catch (error) {
-        console.error('Search error:', error);
+        console.error('Search operation failed:', error.message);
         res.status(500).json([]);  // Return empty array instead of error
     }
 });
