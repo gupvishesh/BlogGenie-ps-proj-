@@ -75,36 +75,84 @@ function openBlogModal(post) {
 
 async function searchBlogs(query) {
     const blogGrid = document.getElementById('blog-grid');
-    blogGrid.innerHTML = '';
+    blogGrid.innerHTML = '<p>Searching...</p>';
+
+    if (!query || query.length < 2) {
+        loadBlogPosts();
+        return;
+    }
 
     try {
-        // Fetch search results from the API
-        const response = await fetch(`/api/blogs/search?q=${encodeURIComponent(query)}`);
-        const filteredPosts = await response.json();
+        const response = await fetch(`/blogGenie/blogs/search?q=${encodeURIComponent(query)}`, {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json'
+            },
+            credentials: 'include'
+        });
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const posts = await response.json();
+        blogGrid.innerHTML = '';
 
-        filteredPosts.forEach(post => {
+        if (!Array.isArray(posts) || posts.length === 0) {
+            blogGrid.innerHTML = '<p>No blogs found matching your search.</p>';
+            return;
+        }
+
+        posts.forEach(post => {
+            if (!post) return; // Skip if post is null/undefined
+            
             const postElement = document.createElement('div');
             postElement.className = 'blog-card';
+            
+            const image = post.image || '/images/default-blog-image.jpg';
+            const heading = post.heading || 'Untitled';
+            const category = post.category || 'Uncategorized';
+            const authorName = post.authorName || 'Unknown Author';
+
             postElement.innerHTML = `
-                <img src="${post.image}" alt="${post.heading}">
+                <img src="${image}" alt="${heading}" onerror="this.src='/images/default-blog-image.jpg'">
                 <div class="blog-info">
-                    <div class="blog-author">${post.author}</div>
-                    <div class="blog-title">${post.heading}</div>
-                    <div class="blog-category">${post.category || 'Uncategorized'}</div>
+                    <div class="blog-author">${authorName}</div>
+                    <div class="blog-title">${heading}</div>
+                    <div class="blog-category">${category}</div>
                 </div>
             `;
+            
             postElement.addEventListener('click', () => openBlogModal(post));
             blogGrid.appendChild(postElement);
         });
-
-        if (filteredPosts.length === 0) {
-            blogGrid.innerHTML = '<p>No blogs found matching your query.</p>';
-        }
     } catch (error) {
-        console.error('Error searching blogs:', error);
-        blogGrid.innerHTML = '<p>Error searching blogs. Please try again later.</p>';
+        console.error('Search error:', error);
+        blogGrid.innerHTML = `
+            <div class="error-message">
+                <p>Unable to perform search at this time.</p>
+                <button onclick="loadBlogPosts()" class="reload-btn">Show All Blogs</button>
+            </div>
+        `;
     }
 }
+
+// Add debouncing to search input to improve performance
+let searchTimeout;
+document.getElementById('search-input').addEventListener('input', (e) => {
+    clearTimeout(searchTimeout);
+    const query = e.target.value.trim();
+    
+    if (query.length === 0) {
+        loadBlogPosts();
+        return;
+    }
+    
+    // Increased debounce time to 500ms for better performance
+    searchTimeout = setTimeout(() => {
+        searchBlogs(query);
+    }, 500);
+});
 
 // Event listeners
 
@@ -122,15 +170,6 @@ window.addEventListener('click', (event) => {
        
         document.getElementById('blog-modal').style.display = 'none';
         document.body.style.overflow = 'auto';  //Re-enable scrolling
-    }
-});
-
-document.getElementById('search-input').addEventListener('input', (e) => {
-    const query = e.target.value.trim();
-    if (query.length > 0) {
-        searchBlogs(query);
-    } else {
-        loadBlogPosts(); // Reload all blogs if the query is cleared
     }
 });
 

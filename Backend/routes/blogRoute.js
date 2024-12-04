@@ -12,6 +12,53 @@ router.post('/blogs', verifyToken, blogController.createBlogPost);
 // Get all blog posts for authenticated user
 router.get('/blogs', verifyToken, blogController.getAllBlogPosts);
 
+// IMPORTANT: Move these routes to the top, before any routes with :id parameters
+// Search functionality - must be before other routes with parameters
+router.get('/blogs/search', verifyToken, async (req, res) => {
+    const query = req.query.q;
+    if (!query) {
+        return res.json([]);
+    }
+    
+    try {
+        const blogs = await Blog.find({
+            $or: [
+                { heading: { $regex: query, $options: 'i' } },
+                { content: { $regex: query, $options: 'i' } }
+            ]
+        })
+        .populate({
+            path: 'author',
+            select: 'userName'
+        })
+        .lean()  // Convert to plain JavaScript object
+        .exec();
+
+        const formattedBlogs = blogs.map(blog => ({
+            ...blog,
+            authorName: blog.author?.userName || 'Unknown Author',
+            date: blog.createdAt
+        }));
+
+        console.log('Search results:', formattedBlogs); // Debug log
+        res.json(formattedBlogs);
+    } catch (error) {
+        console.error('Search error:', error);
+        res.status(500).json([]);  // Return empty array instead of error
+    }
+});
+
+// Get blogs by category - move this before parameterized routes too
+router.get('/blogs/category/:category', verifyToken, async (req, res) => {
+    const category = req.params.category;
+    try {
+        const blogs = await Blog.find(category === 'Others' ? {} : { category }).sort({ createdAt: -1 }).populate('author');
+        res.json(blogs);
+    } catch (error) {
+        res.status(500).json({ error: 'Error fetching blogs by category' });
+    }
+});
+
 // CRUD operations for individual blog posts
 router.get('/blogs/:id', verifyToken, blogController.getBlogPostById); // Get single blog
 router.put('/blogs/:id', verifyToken, blogController.updateBlogPost);  // Update blog
@@ -33,23 +80,6 @@ router.get('/blogs/view/:id', verifyToken, async (req, res) => {
     }
 });
 
-// Search functionality
-router.get('/blogs/search', async (req, res) => {
-    const query = req.query.q; // Get search query parameter
-    try {
-        // Search blogs by heading or category, case-insensitive
-        const blogs = await Blog.find({
-            $or: [
-                { heading: { $regex: query, $options: 'i' } },
-                { category: { $regex: query, $options: 'i' } }
-            ]
-        });
-        res.json(blogs);
-    } catch (error) {
-        res.status(500).json({ error: 'Error searching blogs' });
-    }
-});
-
 // Get all blogs with optional category filter
 router.get('/allblogs', async (req, res) => {
     const category = req.query.category;
@@ -65,22 +95,11 @@ router.get('/allblogs', async (req, res) => {
     }
 });
 
-// Get blogs by category
-router.get('/blogs/category/:category', async (req, res) => {
-    const category = req.params.category;
-    try {
-        const blogs = await Blog.find(category === 'Others' ? {} : { category }).sort({ createdAt: -1 }).populate('author');
-        res.json(blogs);
-    } catch (error) {
-        res.status(500).json({ error: 'Error fetching blogs by category' });
-    }
-});
-
 // Route to edit a blog
 router.get('/blogs/edit/:id', verifyToken, async (req, res) => {
     try {
         const blog = await Blog.findById(req.params.id);
-        res.render('editBlog.ejs', { blog });
+        res.render('view', { blog });
     } catch (error) {
         console.error('Error fetching blog for edit:', error);
         res.redirect('/blogGenie/profile');
