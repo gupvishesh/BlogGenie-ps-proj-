@@ -88,6 +88,19 @@
 function viewBlog(blogId) {
     window.location.href = `/blogGenie/blogs/view/${blogId}`;
 }
+
+document.addEventListener('DOMContentLoaded', function() {
+    const deleteForms = document.querySelectorAll('.delete-form');
+    deleteForms.forEach(function(form) {
+        form.addEventListener('submit', function(event) {
+            event.stopPropagation();
+            const confirmed = confirm('Are you sure you want to delete this blog? This blog cannot be recovered.');
+            if (!confirmed) {
+                event.preventDefault();
+            }
+        });
+    });
+});
 </script>
 
 </body>

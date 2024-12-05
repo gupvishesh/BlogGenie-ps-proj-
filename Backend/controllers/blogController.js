@@ -94,11 +94,12 @@ exports.deleteBlogPost = async (req, res) => {
     try {
         const blogPost = await BlogPost.findByIdAndDelete(req.params.id);
         if (!blogPost) {
-            return res.status(404).json({ error: "Blog post not found" });
+            return res.redirect('/blogGenie/profile');
         }
-        res.status(200).json({ message: "Blog post deleted successfully" });
+        res.redirect('/blogGenie/profile');
     } catch (error) {
-        res.status (500).json({ error: error.message });
+        console.error('Error deleting blog post:', error);
+        res.redirect('/blogGenie/profile');
     }
 };
 
