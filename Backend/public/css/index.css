@@ -90,7 +90,7 @@ header{
     padding: 0px 30px;
     background-color:#1C1C1C
   }
-  header .logo{
+  header .logo, .logo-image{
     position:relative;
     font-weight: 700;
     color:#71010c;
@@ -100,6 +100,12 @@ header{
     letter-spacing: 2px;
     transition:0.6s;
     margin-left:80px;
+  }
+  .logo-image {
+    width:6vw;
+    height:10vh;
+    background:URL('./Blogslogo.png');
+    background-size:cover;
   }
   header ul{
     position:relative;
@@ -349,4 +355,147 @@ body {
   height:100%;
   width:165vh;
   border-radius: 50px;
+}
+/* 3rd page */
+.video-page {
+  flex:1;
+  background-color: #000;
+  width: 100vw;
+  height: 90vh;
+  font-family: Arial, sans-serif;
+  color: #ffffff;
+
+  display: flex; /* Enable flexbox */
+  justify-content: center; /* Center horizontally */
+  align-items: center; /* Center vertically */
+  position: relative; /* Ensure it's positioned in the viewport */
+  overflow: hidden; /* Prevent any overflow */
+}
+
+.slider-container {
+  position: relative;
+  width: 100%; /* Adjust width as needed */
+  max-width: 95vw; /* Optional: cap the maximum width */
+  overflow: hidden;
+}
+
+.slider {
+  display: flex;
+  width: 400%; /* 4 sets of 3 cards */
+  animation: slide 24s linear infinite;
+  justify-content: center;
+}
+.slider:hover {
+  animation-play-state: paused;
+}
+@keyframes slide {
+  0% {
+      transform: translateX(0);
+  }
+  100% {
+      transform: translateX(-50%); /* Move half way (2 sets of cards) */
+  }
+}
+.blogs {
+  flex:1;
+  margin: 10px 10px;
+  padding: 30px;
+  box-sizing: border-box;
+  background-color: #1c1b1b;
+  border-radius: 8px;
+  transition: transform 0.3s ease;
+  height:50vh;
+}
+.blogs:hover {
+  transform: scale(1.05);
+}
+.card-accent {
+  height: 8px;
+  margin-bottom: 10px;
+}
+.card-title {
+  font-size: 30px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+.card-author {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+.author-avatar {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  margin-right: 8px;
+  background-color: #4a4a4a;
+
+}
+.card-text {
+  font-size: 20px;
+  color: #b0b0b0;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.x{
+  font-size: 30px;
+}
+/* Help page */
+.helpPage {
+  background-color: #000;
+  width: 100vw;
+  height: 100vh;
+  
+  /* Flexbox to center the content */
+  display: flex;
+  justify-content: center; /* Center horizontally */
+  align-items: center; /* Center vertically */
+}
+.helpVideo{
+  height:80vh;
+  width:80vw;
+}
+/* footer */
+/* .footer{
+  background-color: #1C1C1C;
+  width:100vw;
+  height:20vh;
+} */
+.footer {
+  background-color: #333;
+  color: white;
+  padding: 10px 0; /* Reduced padding */
+  position: relative;
+  bottom: 0;
+  width: 100%;
+  height: 10vh; /* Reduced height */
+}
+
+.footer-container {
+  display: flex;
+  justify-content: space-between; /* Ensures the content is spaced apart */
+  align-items: center; /* Aligns items vertically in the center */
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.footer-info {
+  max-width: 800px; /* Adjusted max-width for better alignment */
+}
+
+.toggle-info-btn {
+  background-color: #007BFF;
+  color: white;
+  border: none;
+  padding: 8px 16px; /* Adjusted padding for smaller button size */
+  cursor: pointer;
+  font-size: 14px; /* Reduced font size */
+  margin-left: auto; /* Pushes the button to the right */
+}
+
+.toggle-info-btn:hover {
+  background-color: #0056b3;
 }

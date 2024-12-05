@@ -1,3 +1,4 @@
+
 // form loading animation
 
 const form = [...document.querySelector('.form').children];
