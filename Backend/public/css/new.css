@@ -269,3 +269,11 @@ input:checked + .toggle-slider:before {
     cursor: pointer;
     position: relative;
 }
+#blogcontent{
+    width: 100%;
+    height: 100%;
+    flex-grow: 1;
+    resize: none;
+    font-size: 18px;
+    line-height: 1.6;
+}

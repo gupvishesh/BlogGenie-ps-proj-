@@ -65,7 +65,7 @@
     </header>
     <form  method="post" action="/blogGenie/blogs/edit/<%= blog._id %>?_method=PUT">
         <textarea id="blog-heading" class="blog-input" name="blogheading"><%= blog.heading %></textarea>
-        <textarea id="blog-content" class="blog-input" name="blogcontent"><%= blog.content %></textarea>
+        <textarea id="blogcontent" class="blog-input" name="blogcontent"><%= blog.content %></textarea>
         <div class="image-container">
         <img id="image-preview" src="#" alt="Preview" style="display: none;" name="imagepreview">
         <i class="fas fa-times delete-image-icon" id="delete-image-icon"></i>

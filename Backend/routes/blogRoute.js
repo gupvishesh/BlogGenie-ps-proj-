@@ -138,7 +138,7 @@ router.get('/allblogs', async (req, res) => {
 router.get('/blogs/edit/:id', verifyToken, async (req, res) => {
     try {
         const blog = await Blog.findById(req.params.id);
-        res.render('view', { blog });
+        res.render('editBlog.ejs', { blog });
     } catch (error) {
         console.error('Error fetching blog for edit:', error);
         res.redirect('/blogGenie/profile');
