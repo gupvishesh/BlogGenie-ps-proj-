@@ -75,14 +75,26 @@ exports.getBlogPostById = async (req, res) => {
 // Update a blog post
 exports.updateBlogPost = async (req, res) => {
   try {
-    const { heading, content, image, category } = req.body;
-    const blogPost = await BlogPost.findByIdAndUpdate(req.params.id, { heading, content, image, category }, { new: true });
-    if (!blogPost) {
+    console.log("inside updateBlogPost:");
+    const { id } = req.params; // Blog ID from URL
+    const { heading, content, category } = req.body; // Data from form inputs
+
+    // Update the blog post in the database
+    const updatedBlog = await BlogPost.findByIdAndUpdate(
+      id,
+      { heading, content, category },
+      { new: true } // Returns the updated document
+    );
+
+    if (!updatedBlog) {
       return res.status(404).json({ error: "Blog post not found" });
     }
-    res.status(200).json({ message: "Blog post updated successfully" });
+
+    // Optionally, redirect or send a success response
+    res.redirect('/blogGenie/profile'); // Redirect to profile page after updating
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error("Error updating blog:", error);
+    res.status(500).json({ error: "An error occurred while updating the blog." });
   }
 };
 

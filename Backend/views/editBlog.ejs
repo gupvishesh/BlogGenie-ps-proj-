@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Blog Editor</title>
+<title>Edit Blog</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Roboto+Slab:wght@400;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/css/new.css">
@@ -17,10 +17,6 @@
     <div class="menu-item" id="my-blogs-btn" data-purpose="View my blogs">
         <i class="fas fa-book"></i>
         <div class="tooltip">My Blogs</div>
-    </div>
-    <div class="menu-item" id="update-btn" data-purpose="Update blog">
-        <i class="fas fa-sync-alt"></i>
-        <div class="tooltip">Update</div>
     </div>
     <div class="menu-item" id="save-btn" data-purpose="Save blog">
         <i class="fas fa-save"></i>
@@ -56,7 +52,7 @@
         <div class="header-center">
             <div class="header-date" id="current-date-time"></div>
         </div>
-        <select id="category-dropdown" class="category-dropdown">
+        <select id="category-dropdown" class="category-dropdown" name="categorydropdown">
             <option value="">Select Category</option>
             <option value="food">Food</option>
             <option value="business">Business</option>
@@ -67,14 +63,16 @@
         </select>
         <div class="header-line"></div>
     </header>
-    <input type="text" id="blog-heading" class="blog-input" placeholder="Heading">
-    <textarea id="blog-content" class="blog-input" placeholder="Start writing your blog..."></textarea>
-    <div class="image-container">
-        <img id="image-preview" src="#" alt="Preview" style="display: none;">
+    <form  method="post" action="/blogGenie/blogs/edit/<%= blog._id %>?_method=PUT">
+        <textarea id="blog-heading" class="blog-input" name="blogheading"><%= blog.heading %></textarea>
+        <textarea id="blog-content" class="blog-input" name="blogcontent"><%= blog.content %></textarea>
+        <div class="image-container">
+        <img id="image-preview" src="#" alt="Preview" style="display: none;" name="imagepreview">
         <i class="fas fa-times delete-image-icon" id="delete-image-icon"></i>
-    </div>
-    <input type="file" id="image-upload" accept="image/*">
-    <button id="publish-btn">Publish</button>
+        </div>
+        <input type="file" id="image-upload" accept="image/*" name="imageupload">
+        <button type="submit" id="update-btn">Update</button>
+    </form>
 </main>
 
 <div class="profile-box" id="profile-box">
@@ -85,6 +83,6 @@
     </div>
 </div>
 
-<script src="/javascript/new.js"></script>
+<script src="/javascript/edit.js"></script>
 </body>
 </html>

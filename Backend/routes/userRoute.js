@@ -67,7 +67,7 @@ router.get("/profile", verifyToken, async (req, res) => {
         const userBlogs = await Blog.find({ author: req.user.id })
             .sort({ createdAt: -1 }); // Sort by newest first
         
-        console.log("Found blogs:", userBlogs); // Debug log
+        // console.log("Found blogs:", userBlogs); // Debug log
         res.render("profile.ejs", { 
             user: user, 
             userBlogs: userBlogs 

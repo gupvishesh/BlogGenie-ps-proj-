@@ -4,7 +4,8 @@ const router = express.Router();
 const blogController = require('../controllers/blogController');
 const { checkForAuthenticationCookie } = require('../middlewares/authentication');
 const Blog = require('../models/blogs');
-
+const app=express();
+app.use(express.json());
 // Create a new blog post
 router.post('/blogs', verifyToken, blogController.createBlogPost);
 
@@ -15,7 +16,33 @@ router.post('/blogs', verifyToken, blogController.createBlogPost);
 router.get('/blogs', verifyToken, blogController.getAllBlogPosts);
 // router.get('/allblogs', verifyToken, blogController.getAllBlogs);
 router.get('/blogs/:id', verifyToken, blogController.getBlogPostById);
-router.put('/blogs/:id', verifyToken, blogController.updateBlogPost);
+// router.put('/blogs/edit/:id', verifyToken, blogController.updateBlogPost);
+
+router.put('/blogs/edit/:id', async (req, res) => {
+    console.log("req.body=",req.body);
+    const blogId = req.params.id;
+    const newHeading=req.body.blogheading; 
+    const newContent=req.body.blogcontent; 
+    const newImage=req.body.imageupload; 
+    const newCategory=req.body.categorydropdown; 
+    console.log("req.body=",req.body);
+    try {
+        // Use `updateOne` and wait for the Promise to resolve
+        const result = await Blog.findByIdAndUpdate(blogId, {
+            heading:newHeading,
+            content:newContent,
+            category:newCategory,
+            image:newImage
+        },{new:true});
+        res.redirect("/blogGenie/profile");
+    } catch (err) {
+        console.error('Error updating blog:', err);
+        res.status(500).send({ error: 'Failed to update blog post' });
+    }
+});
+
+
+
 router.delete('/blogs/:id', verifyToken, blogController.deleteBlogPost);
 
 // Route to view a single blog
