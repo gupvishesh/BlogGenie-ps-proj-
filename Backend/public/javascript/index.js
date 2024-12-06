@@ -1,22 +1,34 @@
-//Feature button click
 document.addEventListener('DOMContentLoaded', function() {
-const featuresBtn = document.getElementById('AboutBtn'); // Get the button by ID
-const featuresSection = document.getElementById('container'); // Use the ID of the container you want to scroll to
+    // Get both buttons by their respective IDs
+    const aboutBtn = document.getElementById('AboutBtn');
+    const helpBtn = document.getElementById('HelpBtn');
 
-featuresBtn.addEventListener('click', function(e) {
-    e.preventDefault();
-    smoothScroll(featuresSection);
-});
-function smoothScroll(target) {
-    const headerOffset = 80; // Adjust this as necessary for your header height
-    const elementPosition = target.getBoundingClientRect().top;
-    const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+    // Get the sections to scroll to
+    const aboutSection = document.getElementById('container');
+    const helpSection = document.getElementById('helpPage');
 
-    window.scrollTo({
-        top: offsetPosition,
-        behavior: "smooth"
+    // Attach event listeners to the buttons
+    aboutBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        smoothScroll(aboutSection); // Scroll to 'container' section
     });
-}
+
+    HelpBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        smoothScroll(helpSection); // Scroll to 'video-page' section
+    });
+
+    // Smooth scroll function
+    function smoothScroll(target) {
+        const headerOffset = 80; // Adjust this as necessary for your header height
+        const elementPosition = target.getBoundingClientRect().top;
+        const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
+        window.scrollTo({
+            top: offsetPosition,
+            behavior: "smooth"
+        });
+    }
 });
 
     //nav bar sticyness
@@ -46,8 +58,11 @@ function smoothScroll(target) {
                     document.body.style.backgroundColor = '#685770'; // Change to card 2 background color
                 } 
                 else if (card.id === 'card3') {
-                    document.body.style.backgroundColor = '#4c6984';
+                    document.body.style.backgroundColor = '#000';
                 }
             }
         });
     });
+    // #4c6984
+    
+    

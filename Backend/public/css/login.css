@@ -15,10 +15,14 @@ body {
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0,0,0,0.1);
 }
-.container img{
+.image{
     width:110px;
     height:100px;
     margin-left: 150px;
+    background: URL('./logologin.png');
+    background-size: contain; /* Scale the image to fit within the dimensions without cropping or stretching */
+    background-repeat: no-repeat; /* Prevent the image from repeating */
+    background-position: center;
 }
 h2 {
     text-align: center;
