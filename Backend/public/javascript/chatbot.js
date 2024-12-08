@@ -50,30 +50,75 @@ import {
   function displayMessage(message, sender) {
     const outputContainer = document.getElementById("output-container");
     const msgDiv = document.createElement("div");
-    msgDiv.classList.add(sender === "user" ? "user-message" : "ai-message");
-  
+    
     if (sender === "ai") {
-      // Show loading animation for AI messages
-      msgDiv.innerHTML =
-        '<div class="loading">' +
-        '<div class="loading-dot"></div>' +
-        '<div class="loading-dot"></div>' +
-        '<div class="loading-dot"></div>' +
-        "</div>";
-      outputContainer.appendChild(msgDiv);
-  
-      // Simulate processing delay
-      setTimeout(() => {
-        // Clear loading animation
-        msgDiv.innerHTML = marked.parse(message);
-        outputContainer.scrollTop = outputContainer.scrollHeight; // Scroll to bottom
-      }, 1500);
+        // Create wrapper for AI message
+        const messageWrapper = document.createElement("div");
+        messageWrapper.className = "ai-message-wrapper";
+        
+        // Create message div
+        const aiMessage = document.createElement("div");
+        aiMessage.className = "ai-message";
+        
+        // Add loading animation initially
+        aiMessage.innerHTML = `
+            <div class="loading">
+                <div class="loading-dot"></div>
+                <div class="loading-dot"></div>
+                <div class="loading-dot"></div>
+            </div>
+        `;
+        
+        // Create publish button
+        const publishButton = document.createElement("button");
+        publishButton.className = "publish-button";
+        publishButton.style.cssText = `
+            color: white;
+            background: linear-gradient(135deg, #6e8efb, #4a6cf7);
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            margin-top: 12px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(74, 108, 247, 0.2);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        `;
+        publishButton.innerHTML = '<i class="fas fa-edit"></i> Publish as Blog';
+        publishButton.onmouseover = () => {
+            publishButton.style.transform = 'translateY(-2px)';
+            publishButton.style.boxShadow = '0 6px 20px rgba(74, 108, 247, 0.3)';
+        };
+        publishButton.onmouseout = () => {
+            publishButton.style.transform = 'translateY(0)';
+            publishButton.style.boxShadow = '0 4px 15px rgba(74, 108, 247, 0.2)';
+        };
+        publishButton.onclick = () => {
+            localStorage.setItem('chatbotContent', message);
+            window.location.href = '/blogGenie/new';
+        };
+        
+        // Append message and button to wrapper
+        messageWrapper.appendChild(aiMessage);
+        messageWrapper.appendChild(publishButton);
+        outputContainer.appendChild(messageWrapper);
+        
+        // Update message content after delay
+        setTimeout(() => {
+            aiMessage.innerHTML = marked.parse(message);
+        }, 1500);
+        
     } else {
-      msgDiv.innerHTML = marked.parse(message);
-      outputContainer.appendChild(msgDiv);
+        // User message
+        msgDiv.className = "user-message";
+        msgDiv.innerHTML = marked.parse(message);
+        outputContainer.appendChild(msgDiv);
     }
-  
-    // Ensure the latest message is visible
+    
+    // Scroll to latest message
     outputContainer.scrollTop = outputContainer.scrollHeight;
   }
   

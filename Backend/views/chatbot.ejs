@@ -24,6 +24,48 @@
 />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.1/marked.min.js"></script>
     <link rel="stylesheet" href="/css/chatbot.css">
+    <!-- Add this CSS -->
+    <style>
+        .ai-message-container {
+            position: relative;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+        .publish-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            padding: 8px 15px;
+            background-color: #1a1a1a;
+            color: #ffffff;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+            transition: all 0.2s ease;
+            font-size: 0.9rem;
+            z-index: 10;
+            backdrop-filter: blur(5px);
+        }
+        .publish-btn:hover {
+            background-color: #2d2d2d;
+            border-color: rgba(255, 255, 255, 0.4);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+        }
+        .publish-btn i {
+            font-size: 1rem;
+            color: #ffffff;
+        }
+        .publish-btn:active {
+            transform: translateY(1px);
+            box-shadow: 0 1px 4px rgba(0,0,0,0.4);
+        }
+    </style>
 </head>
 <body>
     <div id="Loader"></div>
@@ -98,7 +140,54 @@
 
     <script src="/javascript/chatbot.js" type="module"></script>
     
+    <script>
+      function displayMessage(message, sender) {
+        const outputContainer = document.getElementById("output-container");
+        const msgDiv = document.createElement("div");
+        msgDiv.classList.add(sender === "user" ? "user-message" : "ai-message");
 
+        if (sender === "ai") {
+            // Create container for AI message and publish button
+            const containerDiv = document.createElement("div");
+            containerDiv.className = "ai-message-container";
+            
+            // Add loading animation initially
+            msgDiv.innerHTML = '<div class="loading"><div class="loading-dot"></div><div class="loading-dot"></div><div class="loading-dot"></div></div>';
+            containerDiv.appendChild(msgDiv);
+            outputContainer.appendChild(containerDiv);
+
+            // Simulate processing delay
+            setTimeout(() => {
+                // Update message content
+                msgDiv.innerHTML = marked.parse(message);
+                
+                // Add publish button with white text
+                const publishBtn = document.createElement("button");
+                publishBtn.className = "publish-btn";
+                publishBtn.style.color = "#ffffff"; // Ensure text is white
+                publishBtn.innerHTML = '<i class="fas fa-edit" style="color: #ffffff;"></i> <span style="color: #ffffff;">Create Blog</span>';
+                publishBtn.onclick = () => publishToBlogEditor(message);
+                containerDiv.appendChild(publishBtn);
+                
+                outputContainer.scrollTop = outputContainer.scrollHeight;
+            }, 1500);
+        } else {
+            msgDiv.innerHTML = marked.parse(message);
+            outputContainer.appendChild(msgDiv);
+        }
+
+        outputContainer.scrollTop = outputContainer.scrollHeight;
+      }
+
+      // Function to publish content to blog editor
+      function publishToBlogEditor(content) {
+          // Store the content temporarily
+          localStorage.setItem('chatbotContent', content);
+          
+          // Redirect to blog editor
+          window.location.href = '/blogGenie/new';
+      }
+    </script>
 
     
 </body>

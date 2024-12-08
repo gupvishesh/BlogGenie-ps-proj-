@@ -60,5 +60,18 @@
     </div>
 
     <script src="/javascript/view2.js" defer></script>
+    <script>
+        // Add this to your initialization code
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check for content from chatbot
+            const chatbotContent = localStorage.getItem('chatbotContent');
+            if (chatbotContent) {
+                // Set the content in the editor
+                document.getElementById('blog-content').value = chatbotContent;
+                // Clear the stored content
+                localStorage.removeItem('chatbotContent');
+            }
+        });
+    </script>
 </body>
 </html>
