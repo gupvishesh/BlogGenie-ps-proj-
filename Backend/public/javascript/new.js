@@ -121,7 +121,7 @@ document.getElementById('my-blogs-btn').addEventListener('click', function() {
     window.location.href = '/blogGenie/profile';
 });
 
-document.getElementById('update-btn').addEventListener('click', function() {
+document.getElementById('updatebtn').addEventListener('click', function() {
     const blogContent = document.getElementById('blog-content');
     blogContent.focus();
     blogContent.setSelectionRange(blogContent.value.length, blogContent.value.length);
