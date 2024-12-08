@@ -1,9 +1,10 @@
 const categories = [
-    { name: 'Food', image: '/images/Daltadka.jpeg' },
-    { name: 'Business', image: '/images/business.jpeg' },
-    { name: 'Health Fitness', image: '/images/fitness.jpeg' },
-    { name: 'Travel', image: '/images/Travel.jpeg' },
-    { name: 'Career', image: '/images/career.jpeg' },
+    { name: 'food', image: '/images/Daltadka.jpeg' },
+    { name: 'business', image: '/images/business.jpeg' },
+    { name: 'health', image: '/images/fitness.jpeg' },
+    { name: 'travel', image: '/images/Travel.jpeg' },
+    { name: 'career', image: '/images/career.jpeg' },
+    { name: 'personal', image: '/images/personal.jpeg' }
 ];
 
 function loadCategories() {
@@ -59,7 +60,61 @@ async function loadBlogPosts(category) {
 }
 
 async function filterBlogsByCategory(category) {
-    loadBlogPosts(category);
+    const blogGrid = document.getElementById('blog-grid');
+    blogGrid.innerHTML = '<div class="loading">Loading blogs...</div>';
+
+    try {
+        const url = `/blogGenie/blogs/category/${encodeURIComponent(category)}`;
+        const response = await fetch(url, {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            credentials: 'include'
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to fetch blogs');
+        }
+
+        const blogs = await response.json();
+        blogGrid.innerHTML = '';
+
+        if (blogs.length === 0) {
+            blogGrid.innerHTML = `<div class="no-results">No blogs found in ${category} category</div>`;
+            return;
+        }
+
+        blogs.forEach(blog => {
+            const postElement = document.createElement('div');
+            postElement.className = 'blog-card';
+            
+            const authorName = blog.author?.userName || 'Unknown Author';
+            
+            postElement.innerHTML = `
+                <img src="${blog.image || '/images/default-blog-image.jpg'}" 
+                     alt="${blog.heading}" 
+                     onerror="this.src='/images/default-blog-image.jpg'">
+                <div class="blog-info">
+                    <div class="blog-author">${authorName}</div>
+                    <div class="blog-title">${blog.heading}</div>
+                    <div class="blog-category">${blog.category || 'Uncategorized'}</div>
+                </div>
+            `;
+            
+            postElement.addEventListener('click', () => openBlogModal(blog));
+            blogGrid.appendChild(postElement);
+        });
+    } catch (error) {
+        console.error('Error filtering blogs:', error);
+        blogGrid.innerHTML = `
+            <div class="error-message">
+                <p>Failed to load blogs: ${error.message}</p>
+                <button onclick="loadBlogPosts()" class="reload-btn">Show All Blogs</button>
+            </div>
+        `;
+    }
 }
 
 function openBlogModal(post) {

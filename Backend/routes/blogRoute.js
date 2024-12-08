@@ -85,13 +85,38 @@ router.delete('/blogs/:id', verifyToken, blogController.deleteBlogPost);
 
 
 // Get blogs by category - move this before parameterized routes too
-router.get('/blogs/category/:category', verifyToken, async (req, res) => {
-    const category = req.params.category;
+router.get('/blogs/category/:category', async (req, res) => {
     try {
-        const blogs = await Blog.find(category === 'Others' ? {} : { category }).sort({ createdAt: -1 }).populate('author');
-        res.json(blogs);
+        const category = req.params.category;
+        
+        let query = {};
+        if (category !== 'Others') {
+            // Case-insensitive category match
+            query = { category: { $regex: new RegExp('^' + category + '$', 'i') } };
+        }
+
+        const blogs = await Blog.find(query)
+            .populate('author', 'userName')
+            .sort({ createdAt: -1 })
+            .lean();
+
+        // Add fallback values and transform data
+        const transformedBlogs = blogs.map(blog => ({
+            ...blog,
+            author: {
+                userName: blog.author?.userName || 'Unknown Author'
+            },
+            category: blog.category || 'Uncategorized',
+            image: blog.image || '/images/default-blog-image.jpg'
+        }));
+
+        res.status(200).json(transformedBlogs);
     } catch (error) {
-        res.status(500).json({ error: 'Error fetching blogs by category' });
+        console.error('Category filter error:', error);
+        res.status(500).json({ 
+            error: 'Failed to filter blogs by category',
+            details: error.message 
+        });
     }
 });
 
