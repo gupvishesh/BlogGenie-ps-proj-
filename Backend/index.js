@@ -1,30 +1,39 @@
-// Load environment variables from .env file
-require('dotenv').config();
+/**
+ * Main application entry point
+ * Sets up Express server, database connection, and middleware
+ */
 
-// Import required dependencies
-const express = require('express');
+// Core dependencies
+require('dotenv').config();           // Environment variables loader
+const express = require('express');   // Web framework
 const app = express();
-const mongoose = require('mongoose');
-const path = require('path');
-const methodOverride = require('method-override');
-const cookieParser = require('cookie-parser');
+const mongoose = require('mongoose'); // MongoDB ODM
+const path = require('path');            // File path operations utility
+const methodOverride = require('method-override');  // Middleware for HTTP method override
+const cookieParser = require('cookie-parser');      // Parse Cookie header and populate req.cookies
 const userRoute = require('./routes/userRoute');
 const blogRoute = require('./routes/blogRoute');
 const { checkForAuthenticationCookie } = require('./middlewares/authentication');
 
 const BlogPost = require("./models/blogs");
 
-// MongoDB connection setup
+/**
+ * Database Connection
+ * Connects to MongoDB with error handling and logging
+ */
 mongoose.connect("mongodb+srv://Arnav_Agarwal:Arnav2005@cluster0.no81p.mongodb.net/SampleDatabase1?retryWrites=true&w=majority&appName=Cluster0")
     .then(() => console.log('✓ MongoDB connected successfully'))
     .catch(err => console.error('✗ MongoDB connection error:', err.message));
 console.log('MongoDB URI:', process.env.MONGO_URI);
 
-// Middleware Configuration
-app.use(express.urlencoded({ extended: true })); // Parse URL-encoded bodies
-app.use(express.json()); // Parse JSON bodies
-app.use(methodOverride('_method')); // Enable HTTP method override
-app.use(cookieParser()); // Parse Cookie header
+/**
+ * Middleware Setup
+ * Configures essential Express middleware and application settings
+ */
+app.use(express.urlencoded({ extended: true }));  // Form data parser
+app.use(express.json());                          // JSON parser
+app.use(methodOverride('_method'));               // Enable PUT/DELETE in forms
+app.use(cookieParser());                          // Handle cookies
 app.use(express.static(path.join(__dirname, 'public'))); // Serve static files
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));

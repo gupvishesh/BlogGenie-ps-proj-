@@ -1,4 +1,12 @@
-// Import required dependencies
+/**
+ * Blog Routes Module
+ * Handles:
+ * - Blog CRUD operations
+ * - Search functionality
+ * - Category filtering
+ * - Authentication middleware
+ */
+
 const express = require('express');
 const { verifyToken } = require("../routes/userRoute"); // Middleware to verify user authentication
 const router = express.Router();
@@ -10,10 +18,10 @@ app.use(express.json());
 const mongoose = require('mongoose');
 //const Blog = mongoose.model('Blog');
 
-// Create a new blog post
-
-// IMPORTANT: Move these routes to the top, before any routes with :id parameters
-// Search functionality - must be before other routes with parameters
+/**
+ * Search Routes
+ * Handle blog search functionality
+ */
 router.get('/blogs/search', async (req, res) => {
     try {
         const query = req.query.q;
@@ -43,8 +51,10 @@ router.get('/blogs/search', async (req, res) => {
     }
 });
 
-
-// Create a new blog post - requires authentication
+/**
+ * CRUD Routes
+ * Basic blog operations with authentication
+ */
 router.post('/blogs', verifyToken, blogController.createBlogPost);
 
 // Get all blog posts for authenticated user
@@ -76,13 +86,9 @@ router.put('/blogs/edit/:id', async (req, res) => {
     }
 });
 
-
-
 router.delete('/blogs/:id', verifyToken, blogController.deleteBlogPost);
 
 // Route to view a single blog
-
-
 
 // Get blogs by category - move this before parameterized routes too
 router.get('/blogs/category/:category', async (req, res) => {

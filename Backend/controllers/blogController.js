@@ -1,13 +1,22 @@
-// Import required models
+/**
+ * Blog Controller Module
+ * Handles all blog-related operations including CRUD and view rendering
+ */
+
 const BlogPost = require("../models/blogs");
 const User = require("../models/blogusers");
 
-// Blog Creation Controller
+/**
+ * Create Blog Post
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * Validates user authentication and creates new blog post
+ */
 exports.createBlogPost = async (req, res) => {
     try {
         const { heading, content, image, category } = req.body;
         
-        // Verify user authentication
+        // Verify user authentication before proceeding
         if (!req.user || !req.user.id) {
             console.log('User not authenticated');
             return res.status(401).json({ error: 'User not authenticated' });
@@ -43,7 +52,10 @@ exports.createBlogPost = async (req, res) => {
     }
 };
 
-// Blog Retrieval Controllers
+/**
+ * Get All Blog Posts
+ * Retrieves all blogs for authenticated user
+ */
 exports.getAllBlogPosts = async (req, res) => {
     try {
         const blogPosts = await BlogPost.find({ userId: req.user._id });

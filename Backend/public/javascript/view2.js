@@ -1,3 +1,9 @@
+/**
+ * Blog View Management
+ * Handles category filtering, blog display, and search functionality
+ */
+
+// Category definitions with associated images
 const categories = [
     { name: 'food', image: '/images/Daltadka.jpeg' },
     { name: 'business', image: '/images/business.jpeg' },
@@ -7,6 +13,10 @@ const categories = [
     { name: 'personal', image: '/images/personal.jpeg' }
 ];
 
+/**
+ * Category Loading
+ * Populates category list with images and click handlers
+ */
 function loadCategories() {
     const categoryList = document.getElementById('category-list');
     categories.forEach(category => {
@@ -21,6 +31,11 @@ function loadCategories() {
     });
 }
 
+/**
+ * Blog Post Loading
+ * @param {string} category - Optional category filter
+ * Fetches and displays blog posts with optional category filtering
+ */
 async function loadBlogPosts(category) {
     const blogGrid = document.getElementById('blog-grid');
     blogGrid.innerHTML = '';
