@@ -82,69 +82,69 @@ function openBlogModal(post) {
 
 async function searchBlogs(query) {
     const blogGrid = document.getElementById('blog-grid');
-    blogGrid.innerHTML = '<p>Searching...</p>';
-
+    
     if (!query || query.length < 2) {
         loadBlogPosts();
         return;
     }
 
     try {
+        blogGrid.innerHTML = '<div class="loading">Searching...</div>';
+        
         const response = await fetch(`/blogGenie/blogs/search?q=${encodeURIComponent(query)}`, {
             method: 'GET',
             headers: {
-                'Accept': 'application/json'
-            },
-            credentials: 'include'
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
         });
+
+        const data = await response.json();
         
         if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+            throw new Error(data.error || 'Search failed');
         }
-        
-        const posts = await response.json();
+
         blogGrid.innerHTML = '';
 
-        if (!Array.isArray(posts) || posts.length === 0) {
-            blogGrid.innerHTML = '<p>No blogs found matching your search.</p>';
+        if (!Array.isArray(data) || data.length === 0) {
+            blogGrid.innerHTML = '<div class="no-results">No blogs found matching your search.</div>';
             return;
         }
 
-        posts.forEach(post => {
-            if (!post) return; // Skip if post is null/undefined
-            
+        data.forEach(blog => {
             const postElement = document.createElement('div');
             postElement.className = 'blog-card';
             
-            const image = post.image || '/images/default-blog-image.jpg';
-            const heading = post.heading || 'Untitled';
-            const category = post.category || 'Uncategorized';
-            const authorName = post.authorName || 'Unknown Author';
-
+            const authorName = blog.author?.userName || 'Unknown Author';
+            
             postElement.innerHTML = `
-                <img src="${image}" alt="${heading}" onerror="this.src='/images/default-blog-image.jpg'">
+                <img src="${blog.image || '/images/default-blog-image.jpg'}" 
+                     alt="${blog.heading}" 
+                     onerror="this.src='/images/default-blog-image.jpg'">
                 <div class="blog-info">
                     <div class="blog-author">${authorName}</div>
-                    <div class="blog-title">${heading}</div>
-                    <div class="blog-category">${category}</div>
+                    <div class="blog-title">${blog.heading}</div>
+                    <div class="blog-category">${blog.category || 'Uncategorized'}</div>
                 </div>
             `;
             
-            postElement.addEventListener('click', () => openBlogModal(post));
+            postElement.addEventListener('click', () => openBlogModal(blog));
             blogGrid.appendChild(postElement);
         });
+
     } catch (error) {
-        console.error('Search failed:', error.message);
+        console.error('Search error:', error);
         blogGrid.innerHTML = `
             <div class="error-message">
-                <p>Unable to perform search at this time.</p>
+                <p>Search failed: ${error.message}</p>
                 <button onclick="loadBlogPosts()" class="reload-btn">Show All Blogs</button>
             </div>
         `;
     }
 }
 
-// Add debouncing to search input to improve performance
+// Update search input handler
 let searchTimeout;
 document.getElementById('search-input').addEventListener('input', (e) => {
     clearTimeout(searchTimeout);
@@ -155,10 +155,9 @@ document.getElementById('search-input').addEventListener('input', (e) => {
         return;
     }
     
-    // Increased debounce time to 500ms for better performance
     searchTimeout = setTimeout(() => {
         searchBlogs(query);
-    }, 500);
+    }, 300);
 });
 
 // Event listeners

@@ -7,7 +7,42 @@ const { checkForAuthenticationCookie } = require('../middlewares/authentication'
 const Blog = require('../models/blogs');
 const app=express();
 app.use(express.json());
+const mongoose = require('mongoose');
+//const Blog = mongoose.model('Blog');
+
 // Create a new blog post
+
+// IMPORTANT: Move these routes to the top, before any routes with :id parameters
+// Search functionality - must be before other routes with parameters
+router.get('/blogs/search', async (req, res) => {
+    try {
+        const query = req.query.q;
+        
+        if (!query) {
+            return res.json([]);
+        }
+
+        const sanitizedQuery = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        
+        const blogs = await Blog.find({
+            $or: [
+                { heading: { $regex: sanitizedQuery, $options: 'i' } },
+                { content: { $regex: sanitizedQuery, $options: 'i' } },
+                { category: { $regex: sanitizedQuery, $options: 'i' } }
+            ]
+        })
+        .populate('author', 'userName')
+        .sort({ createdAt: -1 })
+        .lean();
+
+        res.status(200).json(blogs);
+
+    } catch (error) {
+        console.error('Search error:', error);
+        res.status(500).json({ error: 'Search failed', details: error.message });
+    }
+});
+
 
 // Create a new blog post - requires authentication
 router.post('/blogs', verifyToken, blogController.createBlogPost);
@@ -47,45 +82,7 @@ router.delete('/blogs/:id', verifyToken, blogController.deleteBlogPost);
 
 // Route to view a single blog
 
-// IMPORTANT: Move these routes to the top, before any routes with :id parameters
-// Search functionality - must be before other routes with parameters
-router.get('/blogs/search', verifyToken, async (req, res) => {
-    const query = req.query.q;
-    if (!query) {
-        return res.json([]);
-    }
-    
-    try {
-        const blogs = await Blog.find({
-            $or: [
-                { heading: { $regex: query, $options: 'i' } },
-                { content: { $regex: query, $options: 'i' } }
-            ]
-        })
-        .populate({
-            path: 'author',
-            select: 'userName'
-        })
-        .lean()  // Convert to plain JavaScript object
-        .exec();
 
-        const formattedBlogs = blogs.map(blog => ({
-            ...blog,
-            authorName: blog.author?.userName || 'Unknown Author',
-            date: blog.createdAt
-        }));
-
-        // Log only if there's an issue with results
-        if (formattedBlogs.length === 0) {
-            console.log(`No search results found for query: "${query}"`);
-        }
-
-        res.json(formattedBlogs);
-    } catch (error) {
-        console.error('Search operation failed:', error.message);
-        res.status(500).json([]);  // Return empty array instead of error
-    }
-});
 
 // Get blogs by category - move this before parameterized routes too
 router.get('/blogs/category/:category', verifyToken, async (req, res) => {
