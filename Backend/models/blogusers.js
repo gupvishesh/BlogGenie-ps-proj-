@@ -1,6 +1,6 @@
 // Import the required modules
 const mongoose = require("mongoose"); // Mongoose is used for MongoDB object modeling
-const bcrypt = require('bcrypt'); // Bcrypt is used for hashing passwords
+const bcryptjs = require('bcryptjs'); // bcryptjs is used for hashing passwords
 const Schema = mongoose.Schema;
 
 // Define the user schema
@@ -37,9 +37,9 @@ userSchema.pre('save', async function (next) {
     }
     try {
         // Generate a salt with 10 rounds
-        const salt = await bcrypt.genSalt(10);
+        const salt = await bcryptjs.genSalt(10);
         // Hash the password with the generated salt
-        this.password = await bcrypt.hash(this.password, salt);
+        this.password = await bcryptjs.hash(this.password, salt);
         next(); // Proceed to the next middleware or save operation
     } catch (err) {
         next(err); // Pass any errors to the next middleware
@@ -49,7 +49,7 @@ userSchema.pre('save', async function (next) {
 // Method to compare the provided password with the hashed password
 userSchema.methods.comparePassword = async function (candidatePassword) {
     // Compare the candidate password with the hashed password
-    return await bcrypt.compare(candidatePassword, this.password);
+    return await bcryptjs.compare(candidatePassword, this.password);
 };
 
 // Create the User model from the schema
