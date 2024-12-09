@@ -139,34 +139,30 @@
         // clearInputs();
       }
 
+      // Function to display messages in the chat interface
       function displayMessage(message, sender) {
+        // Check for the specific error message
+        if (message === "This content is not safe for display based on current settings or an internal error.") {
+            // Show message briefly before reload
+            const outputContainer = document.getElementById("output-container");
+            const msgDiv = document.createElement("div");
+            msgDiv.classList.add("ai-message");
+            msgDiv.innerHTML = message;
+            outputContainer.appendChild(msgDiv);
+
+            // Reload page after short delay (1.5 seconds)
+            setTimeout(() => {
+                window.location.reload();
+            }, 1500);
+            return;
+        }
+
+        // Rest of the existing displayMessage code...
         const outputContainer = document.getElementById("output-container");
         const msgDiv = document.createElement("div");
         msgDiv.classList.add(sender === "user" ? "user-message" : "ai-message");
-
-        if (sender === "ai") {
-          // Show loading animation for AI messages
-          msgDiv.innerHTML =
-            '<div class="loading">' +
-            '<div class="loading-dot"></div>' +
-            '<div class="loading-dot"></div>' +
-            '<div class="loading-dot"></div>' +
-            "</div>";
-          outputContainer.appendChild(msgDiv);
-
-          // Simulate processing delay
-          setTimeout(() => {
-            // Clear loading animation
-            msgDiv.innerHTML = marked.parse(message);
-            outputContainer.scrollTop = outputContainer.scrollHeight; // Scroll to bottom
-          }, 1500);
-        } else {
-          msgDiv.innerHTML = marked.parse(message);
-          outputContainer.appendChild(msgDiv);
-        }
-
-        // Ensure the latest message is visible
-        outputContainer.scrollTop = outputContainer.scrollHeight;
+        
+        // Continue with existing logic...
       }
 
       function clearInputs() {

@@ -147,7 +147,25 @@
     <script src="/javascript/chatbot.js" type="module"></script>
     
     <script>
+      // Function to display messages in the chat interface
       function displayMessage(message, sender) {
+        // Check for the specific error message
+        if (message === "This content is not safe for display based on current settings or an internal error.") {
+            // Show message briefly before reload
+            const outputContainer = document.getElementById("output-container");
+            const msgDiv = document.createElement("div");
+            msgDiv.classList.add("ai-message");
+            msgDiv.innerHTML = message;
+            outputContainer.appendChild(msgDiv);
+
+            // Reload page after short delay (1.5 seconds)
+            setTimeout(() => {
+                window.location.reload();
+            }, 1500);
+            return;
+        }
+
+        // Rest of the existing displayMessage code...
         const outputContainer = document.getElementById("output-container");
         const msgDiv = document.createElement("div");
         msgDiv.classList.add(sender === "user" ? "user-message" : "ai-message");
