@@ -111,7 +111,6 @@ function loadCurrentEditPost() {
         updateDateTime();
     }
 }
-
 document.getElementById('profile-btn').addEventListener('click', function() {
     const profileBox = document.getElementById('profile-box');
     profileBox.style.display = profileBox.style.display === 'none' ? 'flex' : 'none';
@@ -120,7 +119,6 @@ document.getElementById('profile-btn').addEventListener('click', function() {
 document.getElementById('my-blogs-btn').addEventListener('click', function() {
     window.location.href = '/blogGenie/profile';
 });
-
 document.getElementById('updatebtn').addEventListener('click', function() {
     const blogContent = document.getElementById('blog-content');
     blogContent.focus();

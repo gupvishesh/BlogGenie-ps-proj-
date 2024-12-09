@@ -467,11 +467,11 @@ body {
   background-color: #333;
   color: white;
   padding: 10px 0; /* Reduced padding */
-  position: relative;
+  position:relative;
   bottom: 0;
   width: 100%;
   height: 10vh; /* Reduced height */
-}
+  }
 
 .footer-container {
   display: flex;

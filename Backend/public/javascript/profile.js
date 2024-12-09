@@ -30,6 +30,9 @@ document.getElementById('new-blog-btn').addEventListener('click', function() {
 document.getElementById('published-blogs-btn').addEventListener('click', function() {
     window.location.href = '/blogGenie/view';
 });
+document.getElementById('chatbot-btn').addEventListener('click', function() {
+    window.location.href = '/blogGenie/chatbot';
+});
 
 document.getElementById('dark-mode-toggle').addEventListener('click', toggleDarkMode);
 
