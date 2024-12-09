@@ -68,6 +68,12 @@ color:white;
     margin-right: 40px;
 }
 
+.publish-button,
+.publish-btn {
+    /* Existing styles */
+    color: white; /* Set text color to white */
+}
+
 .publish-button {
     position: absolute;
     top: 10px;
@@ -195,4 +201,3 @@ button:hover #generate-btn .stars{
 .history-item:hover {
     background-color: #e0e0e0;
 }
-

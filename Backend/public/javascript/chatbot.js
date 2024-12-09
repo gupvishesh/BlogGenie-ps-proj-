@@ -6,7 +6,7 @@
 import { GoogleGenerativeAI, HarmBlockThreshold, HarmCategory } from "@google/generative-ai";
 
 // Configuration and initialization
-const API_KEY = "...";      // API key for Google's AI service
+const API_KEY = "AIzaSyC2vt53PSYRBiYKi-spgJ3SgjVnGxqivLY";      // API key for Google's AI service
 const genAI = new GoogleGenerativeAI(API_KEY);  // Initialize AI service
 // Variable to store chat instance
 let chat;
@@ -31,18 +31,18 @@ async function sendMessage(prompt) {
     if (!chat) {
         chat = await genAI
             .getGenerativeModel({ 
-                model: "gemini-pro",     // Use Gemini Pro model
+                model: "gemini-pro",     // Use the Gemini Pro model
                 safetySettings           // Apply safety settings
             })
             .startChat({
-                history: [],            // Start with empty chat history
+                history: [],             // Start with an empty chat history
                 generationConfig: {
                     maxOutputTokens: 4000,  // Set maximum response length
                 },
             });
     }
     model = chat;
-    clearInputs(); //clear the input field immediately 
+    clearInputs(); // Clear the input field immediately 
 
     try {
         const result = await model.sendMessage(prompt);
@@ -56,6 +56,9 @@ async function sendMessage(prompt) {
     } catch (error) {
         console.error("Error during message generation:", error);
         displayMessage("This content is not safe for display based on current settings or an internal error.", "ai");
+
+        // Reset the chat object to fix the issue
+        chat = null;
     }
 }
 
@@ -86,6 +89,7 @@ function displayMessage(message, sender) {
         // Create and style the publish button
         const publishButton = document.createElement("button");
         publishButton.className = "publish-button";
+        publishButton.style.color = 'white'; // Ensure text is white
         // Add extensive button styling
         publishButton.style.cssText = `
             color: white;
@@ -118,6 +122,12 @@ function displayMessage(message, sender) {
             localStorage.setItem('chatbotContent', message);  // Store content temporarily
             window.location.href = '/blogGenie/new';         // Redirect to blog editor
         };
+        
+        // If setting innerHTML with inline styles
+        publishButton.innerHTML = `
+            <i class="fas fa-edit" style="color: white;"></i>
+            <span style="color: white;">Publish / Open in editor</span>
+        `;
         
         // Append message and button to wrapper
         messageWrapper.appendChild(aiMessage);
