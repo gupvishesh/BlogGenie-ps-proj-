@@ -50,6 +50,9 @@ app.use((req, res, next) => {
 app.use(checkForAuthenticationCookie('token'));
 
 // Routes
+app.get('/', (req , res) => {
+    res.redirect('/blogGenie');
+})
 app.use('/blogGenie', userRoute);
 app.use('/blogGenie', blogRoute);
 
@@ -61,3 +64,4 @@ app.listen(PORT, () => {
 ✓ API endpoints ready
 `);
 });
+//module.exports = app;
