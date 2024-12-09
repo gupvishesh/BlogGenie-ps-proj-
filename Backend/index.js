@@ -50,14 +50,18 @@ app.use((req, res, next) => {
 app.use(checkForAuthenticationCookie('token'));
 
 // Routes
+app.get('/', (req , res) => {
+    res.redirect('/blogGenie');
+})
 app.use('/blogGenie', userRoute);
 app.use('/blogGenie', blogRoute);
 
 // Start the server
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-    console.log(`
-⚡ Server is running at http://localhost:${PORT}/blogGenie
-✓ API endpoints ready
-`);
-});
+// app.listen(PORT, () => {
+//     console.log(`
+// ⚡ Server is running at http://localhost:${PORT}/blogGenie
+// ✓ API endpoints ready
+// `);
+// });
+module.exports = app;
