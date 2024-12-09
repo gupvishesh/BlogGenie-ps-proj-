@@ -58,10 +58,10 @@ app.use('/blogGenie', blogRoute);
 
 // Start the server
 const PORT = process.env.PORT || 3000;
-// app.listen(PORT, () => {
-//     console.log(`
-// ⚡ Server is running at http://localhost:${PORT}/blogGenie
-// ✓ API endpoints ready
-// `);
-// });
-module.exports = app;
+app.listen(PORT, () => {
+    console.log(`
+⚡ Server is running at http://localhost:${PORT}/blogGenie
+✓ API endpoints ready
+`);
+});
+//module.exports = app;
