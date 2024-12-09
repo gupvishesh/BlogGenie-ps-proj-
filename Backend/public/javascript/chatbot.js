@@ -6,7 +6,7 @@
 import { GoogleGenerativeAI, HarmBlockThreshold, HarmCategory } from "@google/generative-ai";
 
 // Configuration and initialization
-const API_KEY = "...";      // API key for Google's AI service
+const API_KEY = "AIzaSyC2vt53PSYRBiYKi-spgJ3SgjVnGxqivLY";      // API key for Google's AI service
 const genAI = new GoogleGenerativeAI(API_KEY);  // Initialize AI service
 // Variable to store chat instance
 let chat;
