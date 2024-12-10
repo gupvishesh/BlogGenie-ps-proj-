@@ -1,7 +1,11 @@
-
 const { GoogleGenerativeAI, HarmCategory, HarmBlockThreshold } = require("@google/generative-ai");
 
-const API_KEY = process.env.GOOGLE_API_KEY; // Ensure this is set in your environment variables
+// Check for API key and throw meaningful error if missing
+const API_KEY = "AIzaSyC2vt53PSYRBiYKi-spgJ3SgjVnGxqivLY"; ;
+if (!API_KEY) {
+    throw new Error('GOOGLE_API_KEY is not set in environment variables');
+}
+
 const genAI = new GoogleGenerativeAI(API_KEY);
 
 const safetySettings = [
@@ -13,7 +17,14 @@ const safetySettings = [
 
 const sendMessage = async (req, res) => {
     try {
+        if (!genAI) {
+            throw new Error('AI service not properly initialized');
+        }
+
         const { prompt } = req.body;
+        if (!prompt) {
+            return res.status(400).json({ error: 'Prompt is required' });
+        }
 
         const chat = await genAI.getChatModel().startChat({
             history: [],
@@ -27,10 +38,15 @@ const sendMessage = async (req, res) => {
             stopSequences: [],
         });
 
+        if (!result?.candidates?.[0]?.output) {
+            throw new Error('Invalid response from AI service');
+        }
+
         res.json({ message: result.candidates[0].output });
     } catch (error) {
         console.error('Error in chatbot controller:', error);
-        res.status(500).json({ error: 'Internal server error' });
+        // Send generic error to client to avoid exposing sensitive details
+        res.status(500).json({ error: 'Unable to process request' });
     }
 };
 
