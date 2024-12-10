@@ -7,6 +7,7 @@ const User = require('../models/blogusers'); // Import the User model
 const Blog = require('../models/blogs'); // Import the Blog model
 //const verifyToken = require('../services/authentication.js'); // Import the verifyToken middleware
 const router = Router(); // Create a new router instance
+const chatbotController = require('../controllers/chatbotController'); // Import the chatbot controller
 
 // Configure Multer storage settings
 const storage = multer.diskStorage({
@@ -98,6 +99,9 @@ router.get("/view", async (req, res) => {
 router.get("/chatbot", (req, res) => {
     res.render("chatbot.ejs"); // Render the chatbot.ejs template
 });
+
+// Define a route to handle chatbot messages
+router.post('/chatbot/message', chatbotController.sendMessage);
 
 // Logout route
 router.get("/logout", (req, res) => {

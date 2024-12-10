@@ -3,7 +3,7 @@
  * Handles interaction with Google's Generative AI for blog content generation
  */
 
-import { GoogleGenerativeAI, HarmBlockThreshold, HarmCategory } from "@google/generative-ai";
+// Remove the import statements and any references to genAI and chat
 
 // Configuration and initialization
 const API_KEY = "AIzaSyC2vt53PSYRBiYKi-spgJ3SgjVnGxqivLY";      // API key for Google's AI service
@@ -24,41 +24,31 @@ const safetySettings = [
  * @param {string} prompt - User input message
  */
 async function sendMessage(prompt) {
-    let model;
     clearGreeting();    // Remove initial greeting message
-
-    // Initialize chat if not already initialized
-    if (!chat) {
-        chat = await genAI
-            .getGenerativeModel({ 
-                model: "gemini-pro",     // Use the Gemini Pro model
-                safetySettings           // Apply safety settings
-            })
-            .startChat({
-                history: [],             // Start with an empty chat history
-                generationConfig: {
-                    maxOutputTokens: 4000,  // Set maximum response length
-                },
-            });
-    }
-    model = chat;
-    clearInputs(); // Clear the input field immediately 
+    clearInputs();      // Clear the input field immediately 
 
     try {
-        const result = await model.sendMessage(prompt);
-        const response = await result.response;
-        if (response) {
-            const text = await response.text();
-            displayMessage(text, "ai");
+        const response = await fetch('/blogGenie/chatbot/message', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ prompt })
+        });
+
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+
+        const data = await response.json();
+        if (data.message) {
+            displayMessage(data.message, "ai");
         } else {
             displayMessage("This content is not safe for display based on current settings.", "ai");
         }
     } catch (error) {
         console.error("Error during message generation:", error);
-        displayMessage("This content is not safe for display based on current settings or an internal error.", "ai");
-
-        // Reset the chat object to fix the issue
-        chat = null;
+        displayMessage("There was an error generating the message.", "ai");
     }
 }
 
