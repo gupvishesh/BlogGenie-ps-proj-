@@ -1,31 +1,18 @@
 /**
  * AI Chatbot Integration
- * Handles interaction with Google's Generative AI for blog content generation
+ * Handles interaction with backend API for blog content generation
  */
 
-// Remove the import statements and any references to genAI and chat
-
-// Configuration and initialization
-const API_KEY = "AIzaSyC2vt53PSYRBiYKi-spgJ3SgjVnGxqivLY";      // API key for Google's AI service
-const genAI = new GoogleGenerativeAI(API_KEY);  // Initialize AI service
-// Variable to store chat instance
-let chat;
-
-// Configure safety settings to prevent harassment
-const safetySettings = [
-    {
-        category: HarmCategory.HARM_CATEGORY_HARASSMENT,    // Specify harassment category
-        threshold: HarmBlockThreshold.BLOCK_ONLY_HIGH,      // Block only high-risk content
-    },
-];
+// Remove API Key and Google AI references as they belong in backend only
+let searchHistory = [];
 
 /**
- * Handles message sending to AI and response processing
+ * Handles message sending to backend API
  * @param {string} prompt - User input message
  */
 async function sendMessage(prompt) {
-    clearGreeting();    // Remove initial greeting message
-    clearInputs();      // Clear the input field immediately 
+    clearGreeting();    
+    clearInputs();      
 
     try {
         const response = await fetch('/blogGenie/chatbot/message', {
@@ -177,7 +164,6 @@ window.addEventListener("load", function () {
 });
 
 const historyList = document.getElementById('history-list');
-let searchHistory = [];
 
 // Load search history from local storage (if available)
 if (localStorage.getItem('searchHistory')) {
