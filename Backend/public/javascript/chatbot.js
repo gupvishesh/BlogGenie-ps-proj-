@@ -3,7 +3,6 @@
  * Handles interaction with backend API for blog content generation
  */
 
-// Remove API Key and Google AI references as they belong in backend only
 let searchHistory = [];
 
 /**
